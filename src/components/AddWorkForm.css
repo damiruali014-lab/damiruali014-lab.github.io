@@ -1,0 +1,142 @@
+.add-work {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.add-work-heading {
+  margin: 0 0 1.5rem;
+  font-size: 1.25rem;
+}
+
+.add-work-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.add-work-label {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+
+.add-work-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9375rem;
+}
+
+.add-work-input:focus-visible {
+  border-color: var(--accent-strong);
+  outline: 1px solid var(--accent-strong);
+}
+
+textarea.add-work-input {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.add-work-file {
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.add-work-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.add-work-preview-item {
+  position: relative;
+}
+
+.add-work-thumb-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.add-work-thumb-remove:hover {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+
+.add-work-thumb {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  object-fit: cover;
+}
+
+.add-work-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.add-work-cancel {
+  padding: 0.5rem 0.25rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.add-work-cancel:hover {
+  color: var(--text);
+}
+
+.add-work-submit {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--accent-strong);
+  border-radius: 999px;
+  background: var(--accent-strong);
+  color: var(--bg);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.add-work-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.add-work-submit:hover:not(:disabled) {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.add-work-status {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}

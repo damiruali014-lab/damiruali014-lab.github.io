@@ -1,0 +1,114 @@
+.work-preview {
+  min-width: 0;
+}
+
+.work-preview-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  overflow: visible;
+}
+
+.work-preview-frame {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--work-preview-border);
+  border-radius: 20px;
+  background: var(--work-preview-frame);
+  box-shadow: 0 16px 42px var(--work-preview-shadow);
+  transform: translateY(0) scale(1);
+  transition: transform 520ms var(--ease), box-shadow 520ms var(--ease);
+}
+
+.work-preview-tour {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #f5f6f2;
+  object-fit: cover;
+}
+
+.work-preview-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.work-preview-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 700ms var(--ease), transform 1200ms var(--ease);
+}
+
+.work-preview-image.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.work-preview-link:hover .work-preview-frame,
+.work-preview-link:focus-within .work-preview-frame {
+  transform: translateY(-6px) scale(1.018);
+  box-shadow: 0 32px 72px var(--work-preview-shadow-strong);
+}
+
+.work-preview-live {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--work-preview-border);
+  border-radius: var(--radius-pill);
+  background: var(--work-preview-frame);
+  color: var(--work-preview-text);
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.work-preview-live > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ca46b;
+  box-shadow: 0 0 0 3px rgba(76, 164, 107, 0.14);
+}
+
+@media (max-width: 680px) {
+  .work-preview-link {
+    border-radius: 16px;
+  }
+
+  .work-preview-frame { border-radius: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-preview-frame { transition: none; }
+  .work-preview-link:hover .work-preview-frame { transform: none; }
+  .work-preview-image { transition: none; }
+}

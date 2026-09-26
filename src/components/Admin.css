@@ -1,0 +1,79 @@
+.admin {
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 1rem;
+}
+
+.admin-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-heading {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+}
+
+.admin-subheading {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.admin-note {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.admin-error {
+  margin: 1rem 0 0;
+  color: var(--danger);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.admin-failures {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.admin-login {
+  max-width: 22rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.admin-migration {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.admin-back,
+.admin-back-link {
+  font-size: 0.875rem;
+}
+
+.admin-back-link {
+  color: var(--text-muted);
+}
+
+.admin-back-link:hover {
+  color: var(--accent-strong);
+}

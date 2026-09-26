@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* =========================================================================
+   SIGNAL design system
+   One palette, two modes. Legacy token names (--accent, --card-bg, ...) are
+   kept as aliases at the bottom of each block so the admin screens inherit
+   the new palette without being rewritten.
+   ========================================================================= */
+
+:root {
+  /* Light mode: cool paper, not a flipped dark theme. */
+  --bg: #f4f5fa;
+  --bg-deep: #e9ebf6;
+  --surface: #ffffff;
+  --surface-2: #eceefb;
+  --surface-3: #e2e6f7;
+
+  --violet: #5a3ddd;
+  --violet-text: #4b31c4;
+  --violet-soft: rgba(90, 61, 221, 0.1);
+  --violet-line: rgba(90, 61, 221, 0.28);
+  --on-violet: #ffffff;
+
+  --lime: #d8ff73;
+  --lime-deep: #3f5400;
+  --on-lime: #12182b;
+
+  --text: #111730;
+  --text-muted: #566085;
+  --danger: #b3261e;
+  --border: #dfe3f2;
+  --border-strong: #c9cfe6;
+
+  --grid-line: rgba(17, 23, 48, 0.045);
+  --glow-violet: rgba(90, 61, 221, 0.16);
+  --glow-lime: rgba(150, 190, 40, 0.14);
+  --scrim: linear-gradient(to top, rgba(8, 12, 28, 0.62), rgba(8, 12, 28, 0) 62%);
+
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+
+  --radius-card: 22px;
+  --radius-media: 16px;
+  --radius-pill: 999px;
+  --radius-input: 10px;
+
+  --shell: 1200px;
+  --gutter: clamp(20px, 5vw, 48px);
+  --section-gap: clamp(72px, 11vh, 132px);
+  --nav-height: 64px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --speed-fast: 180ms;
+  --speed: 320ms;
+  --speed-slow: 620ms;
+
+  /* Legacy aliases used by the admin UI. */
+  --accent: var(--violet);
+  --accent-strong: var(--violet);
+  --accent-soft: var(--violet-soft);
+  --card-bg: var(--surface);
+
+  color-scheme: light;
+}
+
+:root.dark {
+  --bg: #0d1324;
+  --bg-deep: #080d1b;
+  --surface: #151f3c;
+  --surface-2: #1b284b;
+  --surface-3: #22305a;
+
+  --violet: #6b51e8;
+  --violet-text: #a893ff;
+  --violet-soft: rgba(107, 81, 232, 0.2);
+  --violet-line: rgba(140, 118, 255, 0.36);
+  --on-violet: #ffffff;
+
+  --lime: #d8ff73;
+  --lime-deep: #d8ff73;
+  --on-lime: #12182b;
+
+  --text: #e9edff;
+  --text-muted: #a9b5d8;
+  --border: #253158;
+  --border-strong: #35447a;
+  --danger: #ff9d94;
+
+  --grid-line: rgba(169, 181, 216, 0.06);
+  --glow-violet: rgba(107, 81, 232, 0.3);
+  --glow-lime: rgba(216, 255, 115, 0.12);
+  --scrim: linear-gradient(to top, rgba(5, 8, 20, 0.72), rgba(5, 8, 20, 0) 62%);
+
+  color-scheme: dark;
+}
+
+/* System preference wins only when the visitor has not chosen a mode. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg: #0d1324;
+    --bg-deep: #080d1b;
+    --surface: #151f3c;
+    --surface-2: #1b284b;
+    --surface-3: #22305a;
+
+    --violet: #6b51e8;
+    --violet-text: #a893ff;
+    --violet-soft: rgba(107, 81, 232, 0.2);
+    --violet-line: rgba(140, 118, 255, 0.36);
+
+    --lime-deep: #d8ff73;
+
+    --text: #e9edff;
+    --text-muted: #a9b5d8;
+    --border: #253158;
+    --border-strong: #35447a;
+    --danger: #ff9d94;
+
+    --grid-line: rgba(169, 181, 216, 0.06);
+    --glow-violet: rgba(107, 81, 232, 0.3);
+    --glow-lime: rgba(216, 255, 115, 0.12);
+    --scrim: linear-gradient(to top, rgba(5, 8, 20, 0.72), rgba(5, 8, 20, 0) 62%);
+
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky nav must not cover the heading a jump lands on. */
+  scroll-padding-top: calc(var(--nav-height) + 24px);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  /* Faint engineering grid, sized so it reads as texture, not pattern. */
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  /* Nothing may push the layout sideways on small screens. */
+  overflow-x: hidden;
+}
+
+/* The incoming color scheme expands from the theme control. JavaScript sets
+   the circle's origin to the exact center of the pressed toggle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+a {
+  color: var(--violet-text);
+}
+
+img {
+  max-width: 100%;
+}
+
+/* A long URL in a project description must never widen the grid. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li {
+  overflow-wrap: break-word;
+}
+
+:focus-visible {
+  outline: 2px solid var(--violet-text);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Shared page shell: one place controls the reading width and gutters. */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-gap);
+  scroll-margin-top: calc(var(--nav-height) + 16px);
+}
+
+/* Small uppercase label used above every section heading. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--violet-line);
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 3.25rem);
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
