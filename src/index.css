@@ -204,6 +204,7 @@ li {
 .eyebrow {
   display: block;
   margin: 0 0 1rem;
+  line-height: 1.6;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 0.75rem;

@@ -337,6 +337,21 @@
   }
 }
 
+@media (pointer: coarse) {
+  .story-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  .story-node {
+    min-height: 56px;
+  }
+
+  .story-pager-button {
+    min-height: 44px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .story-scrim,
   .story-drawer,

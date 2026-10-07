@@ -191,7 +191,7 @@ textarea.add-work-input {
 
 .story-step.is-hidden {
   border-style: dashed;
-  opacity: 0.85;
+  border-color: var(--text-muted);
 }
 
 .story-step-head {

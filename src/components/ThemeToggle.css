@@ -40,3 +40,11 @@
     animation: none;
   }
 }
+
+@media (pointer: coarse) {
+  .theme-toggle,
+  .nav-menu-button {
+    width: 44px;
+    height: 44px;
+  }
+}

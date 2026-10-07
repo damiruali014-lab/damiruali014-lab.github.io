@@ -95,6 +95,7 @@ function StageView({ work, embed, number }) {
               rel="noopener noreferrer"
             >
               Open full screen ↗
+              <span className="visually-hidden"> (opens in a new tab)</span>
             </a>
           )}
           {canFullscreen && (

@@ -29,6 +29,18 @@ That script creates:
 - the `work-images` storage bucket with matching policies,
 - the realtime publication for `works`.
 
+Then run the two follow-up migrations, in order, the same way:
+
+- [`0002_stage_and_story.sql`](supabase/migrations/0002_stage_and_story.sql) adds
+   the Live Stage columns (`embed_kind`, `embed_url`, `try_hint`, `tools`) and
+   `build_story`, the "How I built it" timeline.
+- [`0003_private_hidden_steps.sql`](supabase/migrations/0003_private_hidden_steps.sql)
+   moves steps marked hidden into an admin-only table (`work_story_private`), so
+   visitors cannot read them through the API. A trigger does the split on every
+   save; it also moves any hidden steps saved before it was applied.
+
+Both are safe to re-run.
+
 ## 3. Add environment variables
 
 Copy `.env.example` to `.env` in the project root:
@@ -77,6 +89,11 @@ npm run dev     # http://localhost:5173
 npm run lint
 npm run build
 ```
+
+Without the two Supabase variables, `npm run dev` runs on built-in mock works
+(`src/lib/mockWorks.js`) and `#/admin` skips login and edits them in memory only.
+Production builds never use mock data. Set `VITE_MOCK_TRACKLINE_URL` in
+`.env.local` to point the mock Trackline at a different demo.
 
 Visit `http://localhost:5173/#/admin` and sign in with the owner account.
 

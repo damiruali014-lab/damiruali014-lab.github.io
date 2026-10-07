@@ -143,6 +143,8 @@
 }
 
 .works-card-action {
+  min-width: 28px;
+  min-height: 28px;
   padding: 0.25rem 0.6rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
@@ -262,4 +264,15 @@
 @media (prefers-reduced-motion: reduce) {
   .works-card { animation: none; }
   .works-card-cta-arrow { transition: none; }
+}
+
+/* Admin cards carry Edit/Delete in the meta row; keep the open-link below them. */
+.works.is-admin .works-card-cta {
+  top: 3.5rem;
+}
+
+@media (pointer: coarse) {
+  .works-filter {
+    min-height: 44px;
+  }
 }

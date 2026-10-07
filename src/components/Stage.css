@@ -345,6 +345,29 @@
   .stage-frame.is-embed .stage-screen {
     aspect-ratio: auto;
     height: min(72vh, 560px);
+    height: min(72dvh, 560px);
+  }
+}
+
+/* Touch screens: 44px targets for everything tappable. */
+@media (pointer: coarse) {
+  .stage-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .stage-story-button {
+    min-height: 48px;
+  }
+
+  .channel {
+    min-height: 64px;
+  }
+
+  .stage-images-nav button {
+    width: 44px;
+    height: 44px;
   }
 }
 

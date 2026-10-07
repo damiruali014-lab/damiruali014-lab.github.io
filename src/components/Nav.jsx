@@ -51,6 +51,9 @@ function Nav({ isDark, onToggleTheme }) {
 
   return (
     <header className="nav" ref={menuRef}>
+      <a className="skip-link" href="#stage" onClick={(event) => handleJump(event, 'stage')}>
+        Skip to the stage
+      </a>
       <div className="nav-inner shell">
         <a className="nav-brand" href="#top" onClick={(e) => handleJump(e, 'top')}>
           Uali Damir

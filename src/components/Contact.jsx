@@ -66,6 +66,7 @@ function Contact() {
                 <span className="contact-arrow" aria-hidden="true">
                   ↗
                 </span>
+                {external && <span className="visually-hidden">(opens in a new tab)</span>}
               </a>
             </li>
           ))}

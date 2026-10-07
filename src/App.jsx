@@ -90,14 +90,17 @@ function App() {
   if (isAdminRoute) {
     return (
       <div className="page admin-route">
-        <div className="admin-topbar shell">
+        <header className="admin-topbar shell">
           <a className="admin-brand" href="#/">
             Uali Damir
           </a>
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-        </div>
-        <AdminPanel status={status} session={session} isAdmin={isAdmin} />
-        {(isAdmin || (USE_MOCK_WORKS && !isSupabaseConfigured)) && <Works isAdmin />}
+        </header>
+        <main>
+          <h1 className="visually-hidden">Admin</h1>
+          <AdminPanel status={status} session={session} isAdmin={isAdmin} />
+          {(isAdmin || (USE_MOCK_WORKS && !isSupabaseConfigured)) && <Works isAdmin />}
+        </main>
       </div>
     )
   }
