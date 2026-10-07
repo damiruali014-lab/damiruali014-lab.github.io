@@ -1,4 +1,4 @@
-import { FaLinkedin, FaWhatsapp } from 'react-icons/fa'
+import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import './Contact.css'
 
@@ -6,6 +6,7 @@ const PHONE_NUMBER = '77784760435'
 const PHONE_DISPLAY = '+7 (778) 476 04 35'
 const EMAIL = 'dumich2003@gmail.com'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/damir-uali-930135409/'
+const GITHUB_URL = 'https://github.com/DMR014'
 
 const links = [
   {
@@ -22,6 +23,14 @@ const links = [
     name: 'LinkedIn',
     label: 'damir-uali',
     href: LINKEDIN_URL,
+    external: true,
+  },
+  {
+    key: 'github',
+    icon: FaGithub,
+    name: 'GitHub',
+    label: 'DMR014',
+    href: GITHUB_URL,
     external: true,
   },
   {
