@@ -1,0 +1,343 @@
+.stage {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.stage-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: start;
+}
+
+.stage-main {
+  min-width: 0;
+}
+
+/* ---- Frame ------------------------------------------------------------ */
+
+.stage-frame {
+  overflow: hidden;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius-card);
+  background: var(--stage-bg);
+  color: var(--stage-text);
+}
+
+.stage-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--stage-border);
+  background: var(--stage-bar);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stage-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.stage-bar-text {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--stage-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage-screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+
+.stage-screen-inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  animation: stage-swap var(--speed-fast) var(--ease);
+}
+
+@keyframes stage-swap {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stage-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.stage-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000000;
+}
+
+.stage-loading,
+.stage-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--stage-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  pointer-events: none;
+}
+
+.stage-images {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.stage-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.stage-images-nav {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--stage-bg) 88%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.stage-images-nav button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--stage-text);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.stage-images-nav button:hover {
+  background: var(--stage-border);
+}
+
+.stage-images-nav button:focus-visible,
+.stage-frame :focus-visible {
+  outline-color: var(--stage-text);
+}
+
+/* ---- Line under the frame ---------------------------------------------- */
+
+.stage-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin-top: 0.85rem;
+}
+
+.stage-hint {
+  flex: 1 1 18rem;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.stage-hint-key {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.stage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.stage-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: 500 0.875rem var(--font-body);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: text-decoration-color var(--speed-fast) var(--ease);
+}
+
+.stage-link:hover {
+  text-decoration-color: var(--text);
+}
+
+/* ---- Side panel -------------------------------------------------------- */
+
+.stage-side {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  animation: stage-swap var(--speed-fast) var(--ease);
+}
+
+.stage-side-label {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stage-side-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.stage-side-text {
+  margin: 0.75rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.stage-side-rows {
+  margin: 1.25rem 0 0;
+}
+
+.stage-side-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.stage-side-row dt {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stage-side-row dd {
+  margin: 0;
+}
+
+/* ---- Channel strip ----------------------------------------------------- */
+
+.channel-strip {
+  display: flex;
+  gap: 0.75rem;
+  padding: 2px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.channel {
+  flex: 0 0 clamp(10rem, 22vw, 13rem);
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-media);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: border-color var(--speed-fast) var(--ease);
+}
+
+.channel:hover {
+  border-color: var(--text-muted);
+}
+
+.channel.is-active {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 1px var(--signal);
+}
+
+.channel-number {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+}
+
+.channel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.channel-title {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel-category {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+/* ---- Responsive -------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .stage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones keep the live frame: a tall viewport so the embedded site gets its
+   own mobile layout. The page can still be scrolled past it by the margins. */
+@media (max-width: 767px) {
+  .stage-frame.is-embed .stage-screen {
+    aspect-ratio: auto;
+    height: min(72vh, 560px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-screen-inner,
+  .stage-side {
+    animation: none;
+  }
+
+  .channel,
+  .stage-link {
+    transition: none;
+  }
+}

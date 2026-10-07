@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Trackline (local stand-in)</title>
+<style>
+  body{margin:0;font:15px/1.5 system-ui,sans-serif;background:#fff;color:#16161a}
+  header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #e4e3de}
+  main{padding:18px;max-width:640px;margin:0 auto}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #e4e3de;border-radius:12px;margin-bottom:10px;cursor:pointer}
+  .row[aria-pressed=true]{background:#16161a;color:#fff}
+  button{font:inherit;padding:8px 14px;border-radius:10px;border:1px solid #16161a;background:#16161a;color:#fff;cursor:pointer}
+  small{color:#5c5c66}
+</style>
+</head>
+<body>
+<header><strong>Trackline</strong><small>stand-in demo</small></header>
+<main>
+  <p><small>Local stand-in for the real Trackline demo. Tap a shipment to select it.</small></p>
+  <div id="list"></div>
+  <p><button id="add">Add shipment</button> <small id="count"></small></p>
+</main>
+<script>
+  const names=['Atyrau → Almaty','Aktau → Tashkent','Astana → Moscow'];
+  const list=document.getElementById('list'),count=document.getElementById('count');
+  function add(n){const d=document.createElement('div');d.className='row';d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-pressed','false');
+    d.innerHTML='<span>'+n+'</span><small>in transit</small>';
+    const t=()=>{d.setAttribute('aria-pressed',d.getAttribute('aria-pressed')==='true'?'false':'true')};
+    d.onclick=t;d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}};list.appendChild(d);count.textContent=list.children.length+' shipments'}
+  names.forEach(add);
+  document.getElementById('add').onclick=()=>add('Shipment #'+(list.children.length+1));
+</script>
+</body>
+</html>

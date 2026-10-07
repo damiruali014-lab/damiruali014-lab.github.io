@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js'
 import { publicUrlFor, removeImages, uploadImages } from './images.js'
+import { MOCK_WORKS, USE_MOCK_WORKS } from './mockWorks.js'
 
 const TABLE = 'works'
 
@@ -16,6 +17,10 @@ function fromRow(row) {
     link: row.project_url ?? '',
     imagePaths: paths,
     images: paths.map(publicUrlFor),
+    embedKind: row.embed_kind ?? 'none',
+    embedUrl: row.embed_url ?? '',
+    tryHint: row.try_hint ?? '',
+    tools: row.tools ?? [],
     displayOrder: row.display_order ?? 0,
     published: row.published ?? true,
     createdAt: row.created_at,
@@ -32,6 +37,7 @@ export function newWorkId() {
 }
 
 export async function listWorks() {
+  if (USE_MOCK_WORKS) return MOCK_WORKS
   const client = requireClient()
 
   const { data, error } = await client
