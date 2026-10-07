@@ -6,7 +6,7 @@ const PHONE_NUMBER = '77784760435'
 const PHONE_DISPLAY = '+7 (778) 476 04 35'
 const EMAIL = 'dumich2003@gmail.com'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/damir-uali-930135409/'
-const GITHUB_URL = 'https://github.com/DMR014'
+const GITHUB_URL = 'https://github.com/damiruali014-lab'
 
 const links = [
   {
@@ -29,7 +29,7 @@ const links = [
     key: 'github',
     icon: FaGithub,
     name: 'GitHub',
-    label: 'DMR014',
+    label: 'damiruali014-lab',
     href: GITHUB_URL,
     external: true,
   },
