@@ -1,18 +1,28 @@
 import { supabase } from './supabase.js'
 import { publicUrlFor, removeImages, uploadImages } from './images.js'
 import { MOCK_ROWS, USE_MOCK_WORKS } from './mockWorks.js'
-import { editorToJson, jsonImagePaths, normalizeStory, publicStory } from './story.js'
+import {
+  editorToJson,
+  jsonImagePaths,
+  mergeStory,
+  normalizeStory,
+  publicStory,
+  splitStory,
+} from './story.js'
 
 const TABLE = 'works'
 
 // Database rows use snake_case; the UI components keep the shape they already
 // had (`link`, `images`), so presentation code did not need rewriting.
 //
-// Hidden story steps are dropped here unless the caller is the admin editor,
-// so no component that renders for visitors ever receives one.
-function fromRow(row, { includeHidden = false } = {}) {
+// Visitors' rows only ever contain public story steps (migration 0003 keeps
+// hidden ones in an admin-only table). The admin editor passes `privateRow` to
+// get the full story back. `publicStory` below is a second line of defence for
+// databases that have not had 0003 applied yet.
+function fromRow(row, { includeHidden = false, privateRow = null } = {}) {
   const paths = row.image_paths ?? []
-  const story = normalizeStory(row.build_story, publicUrlFor)
+  const json = includeHidden ? mergeStory(row.build_story, privateRow) : row.build_story
+  const story = normalizeStory(json, publicUrlFor)
 
   return {
     id: row.id,
@@ -58,9 +68,43 @@ function explain(error) {
   return error
 }
 
+// The admin-only table from migration 0003. Until it exists there is simply
+// nothing private to read; any other error must stop the admin from loading,
+// because saving without the hidden steps would delete them.
+const PRIVATE_TABLE = 'work_story_private'
+const MISSING_TABLE = new Set(['42P01', 'PGRST205'])
+
+async function fetchPrivateRows(client, workId) {
+  let query = client.from(PRIVATE_TABLE).select('work_id, hidden_steps, layout, meta')
+  if (workId) query = query.eq('work_id', workId)
+
+  const { data, error } = await query
+  if (error) {
+    if (MISSING_TABLE.has(error.code)) return new Map()
+    throw error
+  }
+  return new Map((data ?? []).map((row) => [row.work_id, row]))
+}
+
 // ---- Dev mock store ---------------------------------------------------------
 // Only reachable when USE_MOCK_WORKS; keeps the admin usable without Supabase.
-let mockRows = MOCK_ROWS.map((row) => ({ ...row }))
+// It splits stories the way the database trigger does, so visitors' data never
+// contains hidden steps here either.
+let mockRows = []
+const mockPrivate = new Map()
+
+function storeMockStory(row) {
+  const { publicStory: open, hiddenSteps, layout, meta } = splitStory(row.build_story)
+  row.build_story = open
+  if (hiddenSteps.length > 0) {
+    mockPrivate.set(row.id, { work_id: row.id, hidden_steps: hiddenSteps, layout, meta })
+  } else {
+    mockPrivate.delete(row.id)
+  }
+  return row
+}
+
+mockRows = MOCK_ROWS.map((row) => storeMockStory({ ...row }))
 const mockListeners = new Set()
 const notifyMock = () => mockListeners.forEach((listener) => listener())
 
@@ -68,7 +112,7 @@ export async function listWorks({ includeHidden = false } = {}) {
   if (USE_MOCK_WORKS) {
     return [...mockRows]
       .sort((a, b) => a.display_order - b.display_order)
-      .map((row) => fromRow(row, { includeHidden }))
+      .map((row) => fromRow(row, { includeHidden, privateRow: mockPrivate.get(row.id) }))
   }
 
   const client = requireClient()
@@ -80,7 +124,11 @@ export async function listWorks({ includeHidden = false } = {}) {
     .order('created_at', { ascending: true })
 
   if (error) throw error
-  return (data ?? []).map((row) => fromRow(row, { includeHidden }))
+
+  const privateRows = includeHidden ? await fetchPrivateRows(client) : new Map()
+  return (data ?? []).map((row) =>
+    fromRow(row, { includeHidden, privateRow: privateRows.get(row.id) }),
+  )
 }
 
 async function nextDisplayOrder(client) {
@@ -153,10 +201,14 @@ export async function createWork(fields, files, onProgress) {
   }
 
   if (USE_MOCK_WORKS) {
-    const saved = { published: true, created_at: new Date().toISOString(), ...row }
+    const saved = storeMockStory({
+      published: true,
+      created_at: new Date().toISOString(),
+      ...row,
+    })
     mockRows = [...mockRows, saved]
     notifyMock()
-    return fromRow(saved, { includeHidden: true })
+    return fromRow(saved, { includeHidden: true, privateRow: mockPrivate.get(id) })
   }
 
   const { data, error } = await client
@@ -205,7 +257,9 @@ export async function updateWork(id, fields, keptPaths, files, onProgress) {
 
   let saved
   if (USE_MOCK_WORKS) {
-    mockRows = mockRows.map((row) => (row.id === id ? { ...row, ...patch } : row))
+    mockRows = mockRows.map((row) =>
+      row.id === id ? storeMockStory({ ...row, ...patch }) : row,
+    )
     saved = mockRows.find((row) => row.id === id)
     notifyMock()
   } else {
@@ -232,11 +286,14 @@ export async function updateWork(id, fields, keptPaths, files, onProgress) {
     await removeImages(removed).catch(() => {})
   }
 
-  return fromRow(saved, { includeHidden: true })
+  // `saved` is the stored row, so it holds public steps only; the admin form
+  // reloads the full story through listWorks.
+  return fromRow(saved, { includeHidden: true, privateRow: USE_MOCK_WORKS ? mockPrivate.get(id) : null })
 }
 
 export async function deleteWork(id) {
   if (USE_MOCK_WORKS) {
+    mockPrivate.delete(id)
     mockRows = mockRows.filter((row) => row.id !== id)
     notifyMock()
     return
@@ -251,6 +308,10 @@ export async function deleteWork(id) {
     .eq('id', id)
     .maybeSingle()
   if (lookupError) throw lookupError
+
+  // Images of hidden steps are only listed in the admin-only row, which the
+  // delete below cascades away, so read it first.
+  const privateRow = (await fetchPrivateRows(client, id)).get(id)
 
   // Ask PostgREST to return the deleted id. A delete blocked by RLS may return
   // no error and affect zero rows; without this check the UI looked as if the
@@ -272,6 +333,7 @@ export async function deleteWork(id) {
   const paths = [
     ...(existing?.image_paths ?? []),
     ...jsonImagePaths(existing?.build_story),
+    ...jsonImagePaths({ steps: privateRow?.hidden_steps }),
   ]
   if (paths.length > 0) {
     await removeImages(paths).catch(() => {})

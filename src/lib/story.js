@@ -61,6 +61,56 @@ export function publicStory(story) {
   return steps.length > 0 ? { ...story, steps } : null
 }
 
+// ---- Public / hidden split ------------------------------------------------
+// The database (migration 0003) keeps hidden steps in an admin-only table, so
+// works.build_story only ever holds public steps. These two functions mirror
+// that split: `splitStory` is what the trigger does on every save (also used
+// by the dev mock store), `mergeStory` rebuilds the full story for the admin
+// editor from the public part plus the admin-only row.
+
+/** Full story JSON -> { publicStory, hiddenSteps, layout, meta }. */
+export function splitStory(json) {
+  if (!json || !Array.isArray(json.steps)) {
+    return { publicStory: json ?? null, hiddenSteps: [], layout: [], meta: null }
+  }
+
+  // Only an explicit boolean true is public.
+  const isPublic = (step) => step?.public === true
+  const open = json.steps.filter(isPublic)
+  const hiddenSteps = json.steps.filter((step) => !isPublic(step))
+
+  if (hiddenSteps.length === 0) {
+    return { publicStory: { ...json, steps: open }, hiddenSteps: [], layout: [], meta: null }
+  }
+
+  const layout = json.steps.map((step) => (isPublic(step) ? 'p' : 'h'))
+  if (open.length === 0) {
+    return {
+      publicStory: null,
+      hiddenSteps,
+      layout,
+      meta: { stats: json.stats, lesson: json.lesson },
+    }
+  }
+  return { publicStory: { ...json, steps: open }, hiddenSteps, layout, meta: null }
+}
+
+/** Public story + admin-only row ({ hidden_steps, layout, meta }) -> full story. */
+export function mergeStory(publicJson, privateRow) {
+  if (!privateRow) return publicJson
+
+  const open = [...(publicJson?.steps ?? [])]
+  const hidden = [...(privateRow.hidden_steps ?? [])]
+  const steps = []
+  for (const mark of privateRow.layout ?? []) {
+    const next = mark === 'p' ? open.shift() : hidden.shift()
+    if (next) steps.push(next)
+  }
+  steps.push(...open, ...hidden)
+
+  return { ...(publicJson ?? privateRow.meta ?? {}), steps }
+}
+
 /** Storage paths of step images in the stored JSON shape. */
 export function jsonImagePaths(json) {
   return (Array.isArray(json?.steps) ? json.steps : [])

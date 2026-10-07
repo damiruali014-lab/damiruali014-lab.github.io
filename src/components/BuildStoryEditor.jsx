@@ -210,6 +210,13 @@ function BuildStoryEditor({ value, onChange, onError, disabled }) {
                 )}
               </div>
 
+              {!step.public && (step.imageUrl || step.imagePath) && (
+                <p className="story-help">
+                  This image is stored in the public image bucket. Its link is
+                  never shown, but it is not private.
+                </p>
+              )}
+
               <label className="story-public">
                 <input
                   type="checkbox"
