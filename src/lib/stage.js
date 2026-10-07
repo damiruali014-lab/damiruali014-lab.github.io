@@ -50,3 +50,29 @@ export function workIdFromHash(hash = window.location.hash) {
 export function setWorkHash(id) {
   window.location.replace(`#/work/${id}`)
 }
+
+// ---- "How I built it" route: #/work/<id>/story --------------------------------
+const STORY_HASH = /^#?\/?work\/[^/?#]+\/story\/?$/
+
+export function isStoryHash(hash = window.location.hash) {
+  return STORY_HASH.test(hash)
+}
+
+// Opening pushes a history entry, so the browser Back button closes the
+// drawer. Closing then goes back instead of stacking another entry; a story
+// that was opened from a pasted link has nothing to go back to, so it replaces.
+let openedFromPage = false
+
+export function openStory(id) {
+  openedFromPage = true
+  window.location.hash = `/work/${id}/story`
+}
+
+export function closeStory(id) {
+  if (openedFromPage) {
+    openedFromPage = false
+    window.history.back()
+  } else {
+    setWorkHash(id)
+  }
+}

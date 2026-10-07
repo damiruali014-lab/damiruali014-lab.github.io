@@ -247,6 +247,24 @@
   margin: 0;
 }
 
+.stage-story-button {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--text);
+  border-radius: var(--radius-media);
+  background: var(--text);
+  color: var(--bg);
+  font: 600 0.9375rem var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition: opacity var(--speed-fast) var(--ease);
+}
+
+.stage-story-button:hover {
+  opacity: 0.88;
+}
+
 /* ---- Channel strip ----------------------------------------------------- */
 
 .channel-strip {
@@ -337,7 +355,8 @@
   }
 
   .channel,
-  .stage-link {
+  .stage-link,
+  .stage-story-button {
     transition: none;
   }
 }

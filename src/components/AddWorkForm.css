@@ -284,67 +284,6 @@ textarea.add-work-input {
   margin-bottom: 1.25rem;
 }
 
-.story-preview {
-  margin-top: 0.5rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-media);
-  background: var(--bg);
-  font-size: 0.9375rem;
-}
-
-.story-preview-head {
-  margin: 0 0 0.75rem;
-  font-weight: 600;
-}
-
-.story-preview-list {
-  display: grid;
-  gap: 1rem;
-  margin: 0 0 1rem;
-  padding-left: 1.25rem;
-}
-
-.story-preview-type {
-  margin: 0;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
-.story-preview-step h4 {
-  margin: 0.15rem 0;
-}
-
-.story-preview-step p {
-  margin: 0.25rem 0;
-}
-
-.story-preview-step img {
-  max-width: 240px;
-  border-radius: var(--radius-input);
-}
-
-.story-preview-prompt {
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
-  overflow-x: auto;
-  border-radius: var(--radius-input);
-  background: var(--stage-bg);
-  color: var(--stage-text);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  white-space: pre-wrap;
-}
-
-.story-preview-stats {
-  margin: 0 0 0.5rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-}
-
 @media (max-width: 560px) {
   .story-row,
   .story-row.is-three {

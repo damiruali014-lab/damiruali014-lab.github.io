@@ -406,6 +406,7 @@ function AddWorkForm() {
           onChange={setStory}
           onError={setError}
           disabled={isSaving}
+          workTitle={fields.title}
         />
         <div className="add-work-buttons">
           <button type="submit" className="add-work-submit" disabled={isSaving}>

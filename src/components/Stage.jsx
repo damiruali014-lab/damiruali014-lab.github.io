@@ -5,7 +5,7 @@ import { resolveEmbed } from '../lib/stage.js'
 
 // Everything inside the "Live stage" section: the frame, the side panel and
 // the channel strip. `works` is already filtered and ordered by the parent.
-function Stage({ works, selectedId, onSelect }) {
+function Stage({ works, selectedId, onSelect, onOpenStory }) {
   const index = Math.max(
     0,
     works.findIndex((work) => work.id === selectedId),
@@ -28,6 +28,16 @@ function Stage({ works, selectedId, onSelect }) {
           <p className="stage-side-label">What you&rsquo;re looking at</p>
           <h3 className="stage-side-title">{work.title}</h3>
           {work.description && <p className="stage-side-text">{work.description}</p>}
+
+          {work.buildStory && (
+            <button
+              type="button"
+              className="stage-story-button"
+              onClick={() => onOpenStory(work.id)}
+            >
+              How I built it <span aria-hidden="true">→</span>
+            </button>
+          )}
 
           <dl className="stage-side-rows">
             <div className="stage-side-row">

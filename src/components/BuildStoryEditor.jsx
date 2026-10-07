@@ -1,12 +1,13 @@
 import { useId, useState } from 'react'
 import { STEP_TYPES, emptyStep, publicStory } from '../lib/story.js'
 import { validateImage } from '../lib/images.js'
+import StoryDrawer from './StoryDrawer.jsx'
 
 const typeLabel = (value) => STEP_TYPES.find((type) => type.value === value)?.label ?? value
 
 // Admin editor for works.build_story: add / remove / reorder steps, edit each
 // one, attach an image, and choose which steps visitors can see.
-function BuildStoryEditor({ value, onChange, onError, disabled }) {
+function BuildStoryEditor({ value, onChange, onError, disabled, workTitle }) {
   const uid = useId()
   const [previewing, setPreviewing] = useState(false)
 
@@ -242,10 +243,9 @@ function BuildStoryEditor({ value, onChange, onError, disabled }) {
         <button
           type="button"
           className="add-work-cancel"
-          aria-pressed={previewing}
-          onClick={() => setPreviewing((open) => !open)}
+          onClick={() => setPreviewing(true)}
         >
-          {previewing ? 'Hide preview' : 'Preview as visitor'}
+          Preview as visitor
         </button>
       </div>
 
@@ -287,42 +287,30 @@ function BuildStoryEditor({ value, onChange, onError, disabled }) {
         </div>
       </div>
 
-      {previewing && (
-        <section className="story-preview" aria-label="Preview as visitor">
-          <p className="story-preview-head">
-            Visitors see {visible?.steps.length ?? 0} of {steps.length} steps
-            {hiddenCount > 0 && ` (${hiddenCount} hidden)`}.
-          </p>
-          {visible ? (
-            <>
-              <ol className="story-preview-list">
-                {visible.steps.map((step, index) => (
-                  <li key={step.key ?? index} className="story-preview-step">
-                    <p className="story-preview-type">
-                      {typeLabel(step.type)}
-                      {step.date && ` · ${step.date}`}
-                    </p>
-                    {step.title && <h4>{step.title}</h4>}
-                    {step.text && <p>{step.text}</p>}
-                    {step.prompt && (
-                      <pre className="story-preview-prompt">&gt; {step.prompt}</pre>
-                    )}
-                    {step.imageUrl && <img src={step.imageUrl} alt="" />}
-                  </li>
-                ))}
-              </ol>
-              {(visible.stats.prompts > 0 || visible.stats.days > 0 || visible.stats.commits > 0) && (
-                <p className="story-preview-stats">
-                  {Number(visible.stats.prompts) || 0} prompts · {Number(visible.stats.days) || 0} days ·{' '}
-                  {Number(visible.stats.commits) || 0} commits
-                </p>
-              )}
-              {visible.lesson && <p>What I learned: {visible.lesson}</p>}
-            </>
-          ) : (
-            <p>No public steps, so visitors will not see a &ldquo;How I built it&rdquo; button.</p>
-          )}
-        </section>
+      <p className="story-help story-summary-line">
+        Visitors see {visible?.steps.length ?? 0} of {steps.length} steps
+        {hiddenCount > 0 && ` (${hiddenCount} hidden)`}.
+      </p>
+
+      {previewing && !visible && (
+        <p className="story-help" role="status">
+          No public steps, so visitors will not see a &ldquo;How I built it&rdquo; button.
+        </p>
+      )}
+      {previewing && visible && (
+        <StoryDrawer
+          title={workTitle || 'Untitled project'}
+          story={{
+            steps: visible.steps,
+            stats: {
+              prompts: Number(value.stats.prompts) || 0,
+              days: Number(value.stats.days) || 0,
+              commits: Number(value.stats.commits) || 0,
+            },
+            lesson: value.lesson.trim(),
+          }}
+          onClose={() => setPreviewing(false)}
+        />
       )}
     </fieldset>
   )

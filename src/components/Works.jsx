@@ -8,7 +8,14 @@ import { isSupabaseConfigured } from '../lib/supabase.js'
 import { USE_MOCK_WORKS } from '../lib/mockWorks.js'
 import Stage from './Stage.jsx'
 import { useHashRoute } from '../hooks.js'
-import { setWorkHash, workIdFromHash } from '../lib/stage.js'
+import StoryDrawer from './StoryDrawer.jsx'
+import {
+  closeStory,
+  isStoryHash,
+  openStory,
+  setWorkHash,
+  workIdFromHash,
+} from '../lib/stage.js'
 
 // Mock data stands in for Supabase in `npm run dev` when it is not configured.
 const hasSource = isSupabaseConfigured || USE_MOCK_WORKS
@@ -26,6 +33,7 @@ function Works({ isAdmin = false }) {
   const [notice, setNotice] = useState('')
   const route = useHashRoute()
   const hashId = workIdFromHash(route)
+  const storyOpen = isStoryHash(route)
   const handledDeepLink = useRef(false)
 
   // Promise chain rather than async/await: setState lands in a callback, not
@@ -160,11 +168,22 @@ function Works({ isAdmin = false }) {
     if (!isAdmin) {
       const selected = visibleWorks.find((work) => work.id === hashId) ?? visibleWorks[0]
       return (
-        <Stage
-          works={visibleWorks}
-          selectedId={selected.id}
-          onSelect={setWorkHash}
-        />
+        <>
+          <Stage
+            works={visibleWorks}
+            selectedId={selected.id}
+            onSelect={setWorkHash}
+            onOpenStory={openStory}
+          />
+          {storyOpen && selected.id === hashId && selected.buildStory && (
+            <StoryDrawer
+              key={selected.id}
+              title={selected.title}
+              story={selected.buildStory}
+              onClose={() => closeStory(selected.id)}
+            />
+          )}
+        </>
       )
     }
 
