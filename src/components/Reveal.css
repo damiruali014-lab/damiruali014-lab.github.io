@@ -1,7 +1,7 @@
 .reveal {
   display: block;
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(10px);
   transition:
     opacity var(--speed-slow) var(--ease),
     transform var(--speed-slow) var(--ease);

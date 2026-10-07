@@ -1,19 +1,6 @@
 .page {
   position: relative;
   min-height: 100vh;
-  isolation: isolate;
-}
-
-/* Two restrained glows anchor the palette without becoming a gradient wash. */
-.page::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60vw 48vh at 76% -6%, var(--glow-violet), transparent 70%),
-    radial-gradient(42vw 36vh at 4% 34%, var(--glow-lime), transparent 72%);
 }
 
 .page-main {
@@ -35,12 +22,11 @@
 
 .admin-brand {
   color: var(--text);
-  font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .admin-brand:hover {
-  color: var(--violet-text);
+  text-decoration: underline;
 }

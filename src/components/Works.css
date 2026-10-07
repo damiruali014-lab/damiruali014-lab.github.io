@@ -74,7 +74,7 @@
 
 .works-card {
   min-width: 0;
-  animation: works-card-enter 560ms var(--ease) backwards;
+  animation: works-card-enter 250ms var(--ease) backwards;
   animation-delay: var(--enter-delay, 0ms);
 }
 
@@ -83,7 +83,7 @@
 }
 
 @keyframes works-card-enter {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -220,7 +220,7 @@
 .works-card.no-media {
   padding: 2rem;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   background: var(--surface);
 }
 
@@ -228,14 +228,14 @@
 
 .works-card-skeleton {
   min-height: 420px;
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   background: var(--surface-2);
   animation: none;
 }
 
 .works-skeleton-media {
   min-height: 300px;
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   background: var(--surface-3);
 }
 

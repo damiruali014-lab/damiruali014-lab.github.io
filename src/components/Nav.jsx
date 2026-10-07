@@ -3,7 +3,7 @@ import './Nav.css'
 import ThemeToggle from './ThemeToggle.jsx'
 
 const sections = [
-  { id: 'work', label: 'Work' },
+  { id: 'stage', label: 'Stage' },
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
 ]
@@ -56,10 +56,6 @@ function Nav({ isDark, onToggleTheme }) {
           Uali Damir
         </a>
 
-        <p className="nav-status">
-          <span className="nav-status-dot" aria-hidden="true" />
-          Available for work
-        </p>
 
         <nav className="nav-links" aria-label="Sections">
           {sections.map(({ id, label }) => (
@@ -107,10 +103,6 @@ function Nav({ isDark, onToggleTheme }) {
             </a>
           ))}
         </nav>
-        <p className="nav-status is-mobile">
-          <span className="nav-status-dot" aria-hidden="true" />
-          Available for work
-        </p>
       </div>
     </header>
   )

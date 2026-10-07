@@ -148,12 +148,12 @@ function Works({ isAdmin = false }) {
   }
 
   return (
-    <section className={`works section${isAdmin ? ' is-admin' : ''}`} id="work">
+    <section className={`works section${isAdmin ? ' is-admin' : ''}`} id="stage">
       <div className="shell">
         <div className="works-head">
           <div>
-            <p className="eyebrow">Selected work</p>
-            <h2 className="section-title">Things I have built.</h2>
+            <p className="eyebrow">Live stage</p>
+            <h2 className="section-title">Pick a channel.</h2>
           </div>
 
           <div
