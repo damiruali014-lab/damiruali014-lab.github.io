@@ -4,8 +4,30 @@ import AdminLogin from './AdminLogin.jsx'
 import MigrationPanel from './MigrationPanel.jsx'
 import { signOut } from '../lib/auth.js'
 import { isSupabaseConfigured } from '../lib/supabase.js'
+import { USE_MOCK_WORKS } from '../lib/mockWorks.js'
 
 function AdminPanel({ status, session, isAdmin }) {
+  // `npm run dev` without Supabase: skip login and edit the in-memory mock data.
+  if (!isSupabaseConfigured && USE_MOCK_WORKS) {
+    return (
+      <section className="admin">
+        <div className="admin-bar">
+          <h2 className="admin-heading">Admin</h2>
+          <div className="admin-bar-actions">
+            <a className="admin-back-link" href="#/">
+              View site
+            </a>
+          </div>
+        </div>
+        <p className="admin-note">
+          Dev mock mode: no Supabase is configured, so there is no login and
+          changes are kept in memory until you reload.
+        </p>
+        <AddWorkForm />
+      </section>
+    )
+  }
+
   if (!isSupabaseConfigured) {
     return (
       <section className="admin">

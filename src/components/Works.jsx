@@ -32,7 +32,7 @@ function Works({ isAdmin = false }) {
   // synchronously in the effect body.
   const load = useCallback(
     () =>
-      listWorks()
+      listWorks({ includeHidden: isAdmin })
         .then((rows) => {
           setWorks(rows)
           setError('')
@@ -54,7 +54,7 @@ function Works({ isAdmin = false }) {
           setError(loadError.message || 'Could not load projects.')
           setWorks((current) => current ?? [])
         }),
-    [],
+    [isAdmin],
   )
 
   useEffect(() => {

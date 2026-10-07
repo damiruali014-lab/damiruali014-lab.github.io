@@ -11,6 +11,8 @@ import About from './components/About.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import { useAdminSession, useHashRoute } from './hooks.js'
+import { isSupabaseConfigured } from './lib/supabase.js'
+import { USE_MOCK_WORKS } from './lib/mockWorks.js'
 
 const THEME_KEY = 'theme'
 
@@ -95,7 +97,7 @@ function App() {
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         </div>
         <AdminPanel status={status} session={session} isAdmin={isAdmin} />
-        {isAdmin && <Works isAdmin />}
+        {(isAdmin || (USE_MOCK_WORKS && !isSupabaseConfigured)) && <Works isAdmin />}
       </div>
     )
   }
