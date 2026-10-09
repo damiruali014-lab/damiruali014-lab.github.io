@@ -48,9 +48,7 @@ function Contact() {
     <section className="contact section" id="contact">
       <div className="shell">
         <p className="eyebrow">Contact</p>
-        <h2 className="contact-title">
-          Have a difficult idea? <span className="contact-title-accent">Let&rsquo;s make it work.</span>
-        </h2>
+        <h2 className="contact-title">Want your project on this stage?</h2>
 
         <ul className="contact-links">
           {links.map(({ key, icon: Icon, name, label, href, external }) => (
@@ -68,6 +66,7 @@ function Contact() {
                 <span className="contact-arrow" aria-hidden="true">
                   ↗
                 </span>
+                {external && <span className="visually-hidden">(opens in a new tab)</span>}
               </a>
             </li>
           ))}

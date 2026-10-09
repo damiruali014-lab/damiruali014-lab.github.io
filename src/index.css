@@ -1,96 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 
 /* =========================================================================
-   SIGNAL design system
-   One palette, two modes. Legacy token names (--accent, --card-bg, ...) are
-   kept as aliases at the bottom of each block so the admin screens inherit
-   the new palette without being rewritten.
+   Quiet design system: "Live Stage + Prompt to Product"
+   Neutral paper and ink, one signal-orange accent. Legacy token names
+   (--violet*, --lime*, --accent*) are kept as neutral aliases so the admin
+   screens inherit the new look without being rewritten.
    ========================================================================= */
 
 :root {
-  /* Light mode: cool paper, not a flipped dark theme. */
-  --bg: #f4f5fa;
-  --bg-deep: #e9ebf6;
+  --bg: #fafaf8;
   --surface: #ffffff;
-  --surface-2: #eceefb;
-  --surface-3: #e2e6f7;
+  --surface-2: #f3f2ee;
+  --surface-3: #eceae4;
 
-  --violet: #5a3ddd;
-  --violet-text: #4b31c4;
-  --violet-soft: rgba(90, 61, 221, 0.1);
-  --violet-line: rgba(90, 61, 221, 0.28);
-  --on-violet: #ffffff;
-
-  --lime: #d8ff73;
-  --lime-deep: #3f5400;
-  --on-lime: #12182b;
-
-  --text: #111730;
-  --text-muted: #566085;
+  --text: #16161a;
+  --text-muted: #5c5c66;
+  --border: #e4e3de;
+  --border-strong: #cfcdc5;
   --danger: #b3261e;
-  --border: #dfe3f2;
-  --border-strong: #c9cfe6;
 
-  --grid-line: rgba(17, 23, 48, 0.045);
-  --glow-violet: rgba(90, 61, 221, 0.16);
-  --glow-lime: rgba(150, 190, 40, 0.14);
-  --scrim: linear-gradient(to top, rgba(8, 12, 28, 0.62), rgba(8, 12, 28, 0) 62%);
+  /* The only accent: live indicators, active channel, current timeline step. */
+  --signal: #e0562b;
+  --signal-soft: rgba(224, 86, 43, 0.12);
 
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  /* The stage frame stays dark in both themes. */
+  --stage-bg: #16161a;
+  --stage-bar: #1e1e23;
+  --stage-text: #ededea;
+  --stage-muted: #a3a3ad;
+  --stage-border: #2a2a30;
 
-  --radius-card: 22px;
+  --font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-body);
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --radius-card: 20px;
   --radius-media: 16px;
   --radius-pill: 999px;
   --radius-input: 10px;
 
   --shell: 1200px;
   --gutter: clamp(20px, 5vw, 48px);
-  --section-gap: clamp(72px, 11vh, 132px);
+  --section-gap: clamp(64px, 10vh, 120px);
   --nav-height: 64px;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
-  --speed-fast: 180ms;
-  --speed: 320ms;
-  --speed-slow: 620ms;
+  --speed-fast: 150ms;
+  --speed: 200ms;
+  --speed-slow: 250ms;
 
-  /* Legacy aliases used by the admin UI. */
-  --accent: var(--violet);
-  --accent-strong: var(--violet);
-  --accent-soft: var(--violet-soft);
+  /* Legacy aliases (admin UI, work cards). Deliberately neutral. */
+  --violet: var(--text);
+  --violet-text: var(--text);
+  --violet-soft: var(--surface-2);
+  --violet-line: var(--border-strong);
+  --on-violet: var(--bg);
+  --lime-deep: var(--text);
+  --accent: var(--text);
+  --accent-strong: var(--text);
+  --accent-soft: var(--surface-2);
   --card-bg: var(--surface);
 
   color-scheme: light;
 }
 
 :root.dark {
-  --bg: #0d1324;
-  --bg-deep: #080d1b;
-  --surface: #151f3c;
-  --surface-2: #1b284b;
-  --surface-3: #22305a;
+  --bg: #121214;
+  --surface: #19191d;
+  --surface-2: #1e1e23;
+  --surface-3: #26262c;
 
-  --violet: #6b51e8;
-  --violet-text: #a893ff;
-  --violet-soft: rgba(107, 81, 232, 0.2);
-  --violet-line: rgba(140, 118, 255, 0.36);
-  --on-violet: #ffffff;
-
-  --lime: #d8ff73;
-  --lime-deep: #d8ff73;
-  --on-lime: #12182b;
-
-  --text: #e9edff;
-  --text-muted: #a9b5d8;
-  --border: #253158;
-  --border-strong: #35447a;
+  --text: #ededea;
+  --text-muted: #9a9aa4;
+  --border: #2a2a30;
+  --border-strong: #3a3a42;
   --danger: #ff9d94;
 
-  --grid-line: rgba(169, 181, 216, 0.06);
-  --glow-violet: rgba(107, 81, 232, 0.3);
-  --glow-lime: rgba(216, 255, 115, 0.12);
-  --scrim: linear-gradient(to top, rgba(5, 8, 20, 0.72), rgba(5, 8, 20, 0) 62%);
+  --signal: #e8663a;
+  --signal-soft: rgba(232, 102, 58, 0.16);
+
+  --stage-bg: #0c0c0e;
+  --stage-bar: #141417;
 
   color-scheme: dark;
 }
@@ -98,29 +88,22 @@
 /* System preference wins only when the visitor has not chosen a mode. */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --bg: #0d1324;
-    --bg-deep: #080d1b;
-    --surface: #151f3c;
-    --surface-2: #1b284b;
-    --surface-3: #22305a;
+    --bg: #121214;
+    --surface: #19191d;
+    --surface-2: #1e1e23;
+    --surface-3: #26262c;
 
-    --violet: #6b51e8;
-    --violet-text: #a893ff;
-    --violet-soft: rgba(107, 81, 232, 0.2);
-    --violet-line: rgba(140, 118, 255, 0.36);
-
-    --lime-deep: #d8ff73;
-
-    --text: #e9edff;
-    --text-muted: #a9b5d8;
-    --border: #253158;
-    --border-strong: #35447a;
+    --text: #ededea;
+    --text-muted: #9a9aa4;
+    --border: #2a2a30;
+    --border-strong: #3a3a42;
     --danger: #ff9d94;
 
-    --grid-line: rgba(169, 181, 216, 0.06);
-    --glow-violet: rgba(107, 81, 232, 0.3);
-    --glow-lime: rgba(216, 255, 115, 0.12);
-    --scrim: linear-gradient(to top, rgba(5, 8, 20, 0.72), rgba(5, 8, 20, 0) 62%);
+    --signal: #e8663a;
+    --signal-soft: rgba(232, 102, 58, 0.16);
+
+    --stage-bg: #0c0c0e;
+    --stage-bar: #141417;
 
     color-scheme: dark;
   }
@@ -146,11 +129,6 @@ body {
   color: var(--text);
   background-color: var(--bg);
   -webkit-font-smoothing: antialiased;
-  /* Faint engineering grid, sized so it reads as texture, not pattern. */
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 72px 72px;
   /* Nothing may push the layout sideways on small screens. */
   overflow-x: hidden;
 }
@@ -178,12 +156,13 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
-  line-height: 1.08;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
 }
 
 a {
-  color: var(--violet-text);
+  color: var(--text);
+  text-underline-offset: 3px;
 }
 
 img {
@@ -203,7 +182,7 @@ li {
 }
 
 :focus-visible {
-  outline: 2px solid var(--violet-text);
+  outline: 2px solid var(--text);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -221,25 +200,17 @@ li {
   scroll-margin-top: calc(var(--nav-height) + 16px);
 }
 
-/* Small uppercase label used above every section heading. */
+/* Small mono label used above every section heading. */
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
+  display: block;
   margin: 0 0 1rem;
+  line-height: 1.6;
   color: var(--text-muted);
-  font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.eyebrow::before {
-  content: '';
-  width: 26px;
-  height: 1px;
-  background: var(--violet-line);
 }
 
 .section-title {

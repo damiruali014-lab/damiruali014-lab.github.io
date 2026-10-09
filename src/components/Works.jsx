@@ -1,41 +1,72 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './Works.css'
 import WorkCard from './WorkCard.jsx'
 import { deleteWork, listWorks, subscribeToWorks } from '../lib/works.js'
 import { computeSpans, variantFor } from '../lib/layout.js'
 import { subscribeToEditRequests } from '../lib/editBus.js'
 import { isSupabaseConfigured } from '../lib/supabase.js'
+import { USE_MOCK_WORKS } from '../lib/mockWorks.js'
+import Stage from './Stage.jsx'
+import { useHashRoute } from '../hooks.js'
+import StoryDrawer from './StoryDrawer.jsx'
+import {
+  closeStory,
+  isStoryHash,
+  openStory,
+  setWorkHash,
+  workIdFromHash,
+} from '../lib/stage.js'
+
+// Mock data stands in for Supabase in `npm run dev` when it is not configured.
+const hasSource = isSupabaseConfigured || USE_MOCK_WORKS
 
 const filters = ['All', 'Code', 'Other', 'Achievements']
 const categoryPriority = { Code: 0, Other: 1, Achievements: 2 }
 
 function Works({ isAdmin = false }) {
   // null means "still loading"; without Supabase there is nothing to load.
-  const [works, setWorks] = useState(() => (isSupabaseConfigured ? null : []))
+  const [works, setWorks] = useState(() => (hasSource ? null : []))
   const [filter, setFilter] = useState('All')
   const [editingId, setEditingId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const route = useHashRoute()
+  const hashId = workIdFromHash(route)
+  const storyOpen = isStoryHash(route)
+  const handledDeepLink = useRef(false)
 
   // Promise chain rather than async/await: setState lands in a callback, not
   // synchronously in the effect body.
   const load = useCallback(
     () =>
-      listWorks()
+      listWorks({ includeHidden: isAdmin })
         .then((rows) => {
           setWorks(rows)
           setError('')
+
+          // A direct #/work/<id> link: make sure its category is showing and
+          // bring the stage into view, once.
+          if (!handledDeepLink.current) {
+            handledDeepLink.current = true
+            const linked = rows.find((row) => row.id === workIdFromHash())
+            if (linked) {
+              setFilter('All')
+              requestAnimationFrame(() =>
+                document.getElementById('stage')?.scrollIntoView(),
+              )
+            }
+          }
         })
         .catch((loadError) => {
           setError(loadError.message || 'Could not load projects.')
           setWorks((current) => current ?? [])
         }),
-    [],
+    [isAdmin],
   )
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return
+    if (!hasSource) return
 
     load()
 
@@ -74,12 +105,21 @@ function Works({ isAdmin = false }) {
     }
   }
 
+  // Switching category keeps a valid channel selected and the URL honest.
+  function handleFilter(name) {
+    setFilter(name)
+    if (isAdmin || !hashId) return
+    const next = (works ?? []).filter((w) => name === 'All' || w.category === name)
+    if (next.length > 0 && !next.some((w) => w.id === hashId)) setWorkHash(next[0].id)
+  }
+
   const isLoading = works === null
   const visibleWorks = (filter === 'All'
     ? [...(works ?? [])]
     : (works ?? []).filter((work) => work.category === filter)
   ).sort((a, b) => {
-    if (filter !== 'All') return 0
+    // Only the admin grid is grouped by category; the stage follows display_order.
+    if (filter !== 'All' || !isAdmin) return 0
     return (
       (categoryPriority[a.category] ?? 99) -
       (categoryPriority[b.category] ?? 99)
@@ -87,7 +127,7 @@ function Works({ isAdmin = false }) {
   })
 
   function renderBody() {
-    if (!isSupabaseConfigured) {
+    if (!hasSource) {
       return (
         <p className="works-message">
           Supabase is not configured yet, so there are no projects to show.
@@ -125,6 +165,28 @@ function Works({ isAdmin = false }) {
       )
     }
 
+    if (!isAdmin) {
+      const selected = visibleWorks.find((work) => work.id === hashId) ?? visibleWorks[0]
+      return (
+        <>
+          <Stage
+            works={visibleWorks}
+            selectedId={selected.id}
+            onSelect={setWorkHash}
+            onOpenStory={openStory}
+          />
+          {storyOpen && selected.id === hashId && selected.buildStory && (
+            <StoryDrawer
+              key={selected.id}
+              title={selected.title}
+              story={selected.buildStory}
+              onClose={() => closeStory(selected.id)}
+            />
+          )}
+        </>
+      )
+    }
+
     const spans = computeSpans(visibleWorks.length)
 
     return (
@@ -148,12 +210,12 @@ function Works({ isAdmin = false }) {
   }
 
   return (
-    <section className={`works section${isAdmin ? ' is-admin' : ''}`} id="work">
+    <section className={`works section${isAdmin ? ' is-admin' : ''}`} id="stage">
       <div className="shell">
         <div className="works-head">
           <div>
-            <p className="eyebrow">Selected work</p>
-            <h2 className="section-title">Things I have built.</h2>
+            <p className="eyebrow">Live stage</p>
+            <h2 className="section-title">Pick a channel.</h2>
           </div>
 
           <div
@@ -169,7 +231,7 @@ function Works({ isAdmin = false }) {
                   name === filter ? 'works-filter is-active' : 'works-filter'
                 }
                 aria-pressed={name === filter}
-                onClick={() => setFilter(name)}
+                onClick={() => handleFilter(name)}
               >
                 {name}
               </button>

@@ -1,4 +1,3 @@
-/* Sits inside the nav bar: same pill language as the status chip. */
 .theme-toggle {
   display: grid;
   place-items: center;
@@ -16,30 +15,22 @@
   overflow: hidden;
   transition:
     border-color var(--speed-fast) var(--ease),
-    color var(--speed-fast) var(--ease),
-    transform var(--speed-fast) var(--ease),
-    background-color var(--speed-fast) var(--ease);
+    color var(--speed-fast) var(--ease);
 }
 
 .theme-toggle:hover {
-  border-color: var(--violet);
-  color: var(--violet-text);
-  background: var(--violet-soft);
-  transform: scale(1.06);
-}
-
-.theme-toggle:active {
-  transform: scale(0.94);
+  border-color: var(--text-muted);
+  color: var(--text);
 }
 
 .theme-toggle-icon {
   display: block;
-  animation: theme-icon-in 480ms var(--ease-spring) both;
+  animation: theme-icon-in var(--speed-slow) var(--ease) both;
 }
 
 @keyframes theme-icon-in {
-  from { opacity: 0; transform: rotate(-70deg) scale(0.45); }
-  to { opacity: 1; transform: rotate(0) scale(1); }
+  from { opacity: 0; transform: rotate(-45deg) scale(0.6); }
+  to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -47,5 +38,13 @@
   .theme-toggle-icon {
     transition: none;
     animation: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .theme-toggle,
+  .nav-menu-button {
+    width: 44px;
+    height: 44px;
   }
 }

@@ -3,8 +3,20 @@ import './AddWorkForm.css'
 import { createWork, newWorkId, updateWork } from '../lib/works.js'
 import { requestEdit, subscribeToEditRequests } from '../lib/editBus.js'
 import { validateImage } from '../lib/images.js'
+import BuildStoryEditor from './BuildStoryEditor.jsx'
+import {
+  emptyEditorStory,
+  releaseStoryPreviews,
+  storyToEditor,
+} from '../lib/story.js'
 
 const categories = ['Code', 'Other', 'Achievements']
+
+const embedKinds = [
+  { value: 'none', label: 'None: image carousel' },
+  { value: 'iframe', label: 'iframe: live project' },
+  { value: 'video', label: 'Video: inline player' },
+]
 
 const emptyFields = {
   id: null,
@@ -12,6 +24,10 @@ const emptyFields = {
   category: 'Code',
   description: '',
   link: '',
+  embedKind: 'none',
+  embedUrl: '',
+  tryHint: '',
+  tools: '', // comma-separated while editing
 }
 
 function AddWorkForm() {
@@ -21,6 +37,9 @@ function AddWorkForm() {
   const [originalPaths, setOriginalPaths] = useState([])
   // Newly picked files, previewed from object URLs until they are uploaded.
   const [newImages, setNewImages] = useState([])
+  const [story, setStory] = useState(emptyEditorStory)
+  // Story images already in storage, so removed ones can be deleted on save.
+  const [originalStoryPaths, setOriginalStoryPaths] = useState([])
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [progress, setProgress] = useState(null)
@@ -37,6 +56,12 @@ function AddWorkForm() {
           return []
         })
 
+        setStory((current) => {
+          releaseStoryPreviews(current)
+          return emptyEditorStory()
+        })
+        setOriginalStoryPaths([])
+
         if (!work) {
           setFields(emptyFields)
           setExistingImages([])
@@ -48,7 +73,15 @@ function AddWorkForm() {
             category: work.category,
             description: work.description ?? '',
             link: work.link ?? '',
+            embedKind: work.embedKind ?? 'none',
+            embedUrl: work.embedUrl ?? '',
+            tryHint: work.tryHint ?? '',
+            tools: (work.tools ?? []).join(', '),
           })
+          setStory(storyToEditor(work.buildStory))
+          setOriginalStoryPaths(
+            (work.buildStory?.steps ?? []).map((step) => step.imagePath).filter(Boolean),
+          )
           setExistingImages(
             (work.imagePaths ?? []).map((path, index) => ({
               path,
@@ -71,6 +104,10 @@ function AddWorkForm() {
         current.forEach((image) => URL.revokeObjectURL(image.preview))
         return []
       })
+      setStory((current) => {
+        releaseStoryPreviews(current)
+        return current
+      })
     },
     [],
   )
@@ -83,10 +120,13 @@ function AddWorkForm() {
 
   function resetForm() {
     newImages.forEach((image) => URL.revokeObjectURL(image.preview))
+    releaseStoryPreviews(story)
     setFields(emptyFields)
     setExistingImages([])
     setOriginalPaths([])
     setNewImages([])
+    setStory(emptyEditorStory())
+    setOriginalStoryPaths([])
     clearFileInput()
   }
 
@@ -131,19 +171,27 @@ function AddWorkForm() {
     setError('')
 
     const files = newImages.map((image) => image.file)
+    const payload = {
+      ...fields,
+      tools: fields.tools
+        .split(',')
+        .map((tool) => tool.trim())
+        .filter(Boolean),
+      buildStory: story,
+    }
 
     try {
       if (isEditing) {
         await updateWork(
           fields.id,
-          { ...fields, previousPaths: originalPaths },
+          { ...payload, previousPaths: originalPaths, previousStoryPaths: originalStoryPaths },
           existingImages.map((image) => image.path),
           files,
           setProgress,
         )
         setStatus('Project updated.')
       } else {
-        await createWork({ ...fields, id: newWorkId() }, files, setProgress)
+        await createWork({ ...payload, id: newWorkId() }, files, setProgress)
         setStatus('Project saved.')
       }
 
@@ -232,6 +280,74 @@ function AddWorkForm() {
             onChange={handleChange}
           />
         </div>
+        <div className="add-work-section">
+          <h3 className="add-work-subheading">Live Stage</h3>
+          <div className="add-work-field">
+            <label className="add-work-label" htmlFor="work-embed-kind">
+              Embed kind
+            </label>
+            <select
+              id="work-embed-kind"
+              className="add-work-input"
+              name="embedKind"
+              value={fields.embedKind}
+              onChange={handleChange}
+            >
+              {embedKinds.map((kind) => (
+                <option key={kind.value} value={kind.value}>
+                  {kind.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          {fields.embedKind !== 'none' && (
+            <div className="add-work-field">
+              <label className="add-work-label" htmlFor="work-embed-url">
+                {fields.embedKind === 'video' ? 'Video URL' : 'Embed URL'}
+              </label>
+              <input
+                id="work-embed-url"
+                className="add-work-input"
+                name="embedUrl"
+                type="url"
+                required={fields.embedKind === 'video'}
+                placeholder={
+                  fields.embedKind === 'video'
+                    ? 'https://example.com/tour.webm'
+                    : 'Leave empty to use the Project URL'
+                }
+                value={fields.embedUrl}
+                onChange={handleChange}
+              />
+            </div>
+          )}
+          <div className="add-work-field">
+            <label className="add-work-label" htmlFor="work-try-hint">
+              Try-it hint
+            </label>
+            <input
+              id="work-try-hint"
+              className="add-work-input"
+              name="tryHint"
+              placeholder="Click a card and move it to another column"
+              value={fields.tryHint}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="add-work-field">
+            <label className="add-work-label" htmlFor="work-tools">
+              Tools (comma-separated)
+            </label>
+            <input
+              id="work-tools"
+              className="add-work-input"
+              name="tools"
+              placeholder="React, Supabase, Claude Code"
+              value={fields.tools}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
         <div className="add-work-field">
           <label className="add-work-label" htmlFor="work-images">
             Images
@@ -285,6 +401,13 @@ function AddWorkForm() {
             </ul>
           )}
         </div>
+        <BuildStoryEditor
+          value={story}
+          onChange={setStory}
+          onError={setError}
+          disabled={isSaving}
+          workTitle={fields.title}
+        />
         <div className="add-work-buttons">
           <button type="submit" className="add-work-submit" disabled={isSaving}>
             {isSaving

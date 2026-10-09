@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js'
+import { USE_MOCK_WORKS } from './mockWorks.js'
 
 export const BUCKET = 'work-images'
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024
@@ -33,7 +34,10 @@ export function buildImagePath(workId, file) {
 }
 
 export function publicUrlFor(path) {
-  if (!supabase || !path) return ''
+  if (!path) return ''
+  // Dev mock mode stores ready-made URLs (blob:/data:) instead of bucket paths.
+  if (/^(blob:|data:)/.test(path)) return path
+  if (!supabase) return ''
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl
 }
 
@@ -48,6 +52,13 @@ export async function removeImages(paths) {
  * leaving no orphans in the bucket.
  */
 export async function uploadImages(workId, files, onProgress) {
+  if (!supabase && USE_MOCK_WORKS) {
+    files.forEach((file) => {
+      const problem = validateImage(file)
+      if (problem) throw new Error(problem)
+    })
+    return files.map((file) => URL.createObjectURL(file))
+  }
   if (!supabase) throw new Error('Supabase is not configured.')
 
   const uploaded = []

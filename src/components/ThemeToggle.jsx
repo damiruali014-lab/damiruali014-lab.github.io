@@ -5,7 +5,6 @@ function ThemeToggle({ isDark, onToggle }) {
     <button
       type="button"
       className="theme-toggle"
-      aria-pressed={isDark}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={onToggle}
     >
