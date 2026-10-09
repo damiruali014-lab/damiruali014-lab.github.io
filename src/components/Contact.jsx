@@ -5,7 +5,7 @@ import './Contact.css'
 const PHONE_NUMBER = '77784760435'
 const PHONE_DISPLAY = '+7 (778) 476 04 35'
 const EMAIL = 'dumich2003@gmail.com'
-const LINKEDIN_URL = 'https://www.linkedin.com/in/damir-uali-930135409/'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/damiruali-dev/'
 const GITHUB_URL = 'https://github.com/damiruali014-lab'
 
 const links = [
@@ -21,7 +21,7 @@ const links = [
     key: 'linkedin',
     icon: FaLinkedin,
     name: 'LinkedIn',
-    label: 'damir-uali',
+    label: 'damiruali-dev',
     href: LINKEDIN_URL,
     external: true,
   },
