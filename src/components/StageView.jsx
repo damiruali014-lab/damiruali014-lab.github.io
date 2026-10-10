@@ -69,7 +69,7 @@ function StageView({ work, embed, number }) {
       <div className="stage-foot">
         <p className="stage-hint">
           {showingFallback
-            ? 'The live embed did not load, so this is the preview.'
+            ? 'Showing screenshots instead of the live demo.'
             : work.tryHint && (
                 <>
                   <span className="stage-hint-key">Try it:</span> {work.tryHint}
@@ -85,6 +85,15 @@ function StageView({ work, embed, number }) {
               onClick={() => setStatus('fallback')}
             >
               Show preview instead
+            </button>
+          )}
+          {showingFallback && (
+            <button
+              type="button"
+              className="stage-link"
+              onClick={() => setStatus('loading')}
+            >
+              Back to live demo
             </button>
           )}
           {isEmbed && embed.destination && (
