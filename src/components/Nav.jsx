@@ -8,6 +8,8 @@ const sections = [
   { id: 'contact', label: 'Contact' },
 ]
 
+const UGC_URL = 'https://damiruali014-lab.github.io/ugc-ads/'
+
 function Nav({ isDark, onToggleTheme }) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
@@ -71,6 +73,9 @@ function Nav({ isDark, onToggleTheme }) {
               {label}
             </a>
           ))}
+          <a className="nav-link" href={UGC_URL}>
+            UGC ads ↗
+          </a>
         </nav>
 
         <div className="nav-actions">
@@ -105,6 +110,9 @@ function Nav({ isDark, onToggleTheme }) {
               {label}
             </a>
           ))}
+          <a className="nav-mobile-link" href={UGC_URL}>
+            UGC ads ↗
+          </a>
         </nav>
       </div>
     </header>

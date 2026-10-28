@@ -9,6 +9,8 @@ function Footer() {
           <span>Kazakhstan</span>
           <span aria-hidden="true">·</span>
           <span>{new Date().getFullYear()}</span>
+          <span aria-hidden="true">·</span>
+          <a href="https://damiruali014-lab.github.io/ugc-ads/">AI UGC video ads</a>
         </p>
       </div>
     </footer>
