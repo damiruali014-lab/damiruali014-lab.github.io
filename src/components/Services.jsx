@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { FiExternalLink } from 'react-icons/fi'
+import { FiExternalLink, FiInfo } from 'react-icons/fi'
 import './Services.css'
 import { FIVERR_URL, serviceTabs } from '../lib/services.js'
 import { whatsappLink } from '../lib/contact.js'
@@ -84,7 +84,15 @@ function DemoButton({ demo, packageName }) {
   )
 }
 
-function PackageCard({ pkg, messageNoun, isSelected, onSelect, onKeyDown, cardRef }) {
+function PackageCard({
+  pkg,
+  messageNoun,
+  featureNote,
+  isSelected,
+  onSelect,
+  onKeyDown,
+  cardRef,
+}) {
   const message = `Hi Damir, I'm interested in the ${pkg.name} ${messageNoun} package`
   const nameId = `package-${pkg.id}-name`
   const titleId = `package-${pkg.id}-title`
@@ -133,6 +141,12 @@ function PackageCard({ pkg, messageNoun, isSelected, onSelect, onKeyDown, cardRe
               {feature}
             </li>
           ))}
+          {featureNote && (
+            <li className="is-note">
+              <FiInfo className="service-note-icon" aria-hidden="true" />
+              {featureNote}
+            </li>
+          )}
         </ul>
 
         <div className="service-card-actions">
@@ -217,6 +231,7 @@ function PackageGroup({ tab, selectedId, onSelect }) {
           key={pkg.id}
           pkg={pkg}
           messageNoun={tab.messageNoun}
+          featureNote={tab.featureNote}
           isSelected={pkg.id === selectedId}
           onSelect={select}
           onKeyDown={handleKeyDown}
@@ -226,6 +241,40 @@ function PackageGroup({ tab, selectedId, onSelect }) {
         />
       ))}
     </ul>
+  )
+}
+
+function formatAddOnPrice({ price, from }) {
+  return `${from ? 'from ' : ''}+$${price}`
+}
+
+// "Popular add-ons": each pill opens WhatsApp with the add-on named.
+function AddOns({ addOns }) {
+  return (
+    <div className="services-addons">
+      <h3 className="services-addons-title" id="services-addons-title">
+        Popular add-ons
+      </h3>
+      <ul className="services-addons-list" aria-labelledby="services-addons-title">
+        {addOns.map((addOn) => (
+          <li key={addOn.id}>
+            <a
+              className="services-addon"
+              href={whatsappLink(`Hi Damir, I'm interested in the ${addOn.name} add-on.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="services-addon-name">{addOn.name}</span>
+              <span className="services-addon-price">{formatAddOnPrice(addOn)}</span>
+              <span className="visually-hidden">
+                {' '}
+                (message me on WhatsApp, opens in a new tab)
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -249,6 +298,8 @@ function ServicePanel({ tab, selectedId, onSelect }) {
   return (
     <>
       <PackageGroup tab={tab} selectedId={selectedId} onSelect={onSelect} />
+
+      {tab.addOns?.length > 0 && <AddOns addOns={tab.addOns} />}
 
       <div className="services-custom">
         <div>

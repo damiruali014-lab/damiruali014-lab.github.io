@@ -10,6 +10,10 @@
      label    what kind of example it is
      name     optional demo name shown before the label
      preview  optional thumbnail in /public, shown on desktop hover
+
+   `featureNote` is added, muted, as the last line of every package in a tab.
+   `addOns` are the "Popular add-ons" pills under the cards; `from: true`
+   shows the price as "from +$20".
    ========================================================================= */
 
 // Where every "Order on Fiverr" button goes.
@@ -21,6 +25,13 @@ export const serviceTabs = [
     label: 'Websites',
     // Used in the prefilled message: "...in the Basic website package".
     messageNoun: 'website',
+    featureNote: 'You provide photos & text, or add an AI brand photo set',
+    addOns: [
+      { id: 'ai-photos', name: 'AI brand photo set (8 photos)', price: 40 },
+      { id: 'extra-page', name: 'Extra page', price: 20 },
+      { id: 'express', name: 'Express delivery', price: 20, from: true },
+      { id: 'payments', name: 'Online payments', price: 50 },
+    ],
     steps: [
       'Tell me about your business',
       'I send a design plan',
@@ -32,7 +43,7 @@ export const serviceTabs = [
         id: 'basic',
         name: 'Basic',
         title: 'Starter Landing Page',
-        price: 80,
+        price: 120,
         deliveryDays: 3,
         revisions: 2,
         demo: {
@@ -43,6 +54,7 @@ export const serviceTabs = [
         },
         features: [
           '1-page responsive website',
+          'Custom design + smooth scroll animations',
           'Contact form, map, social media links',
           'Speed optimization',
           'Hosting setup included',
@@ -53,7 +65,7 @@ export const serviceTabs = [
         id: 'standard',
         name: 'Standard',
         title: 'Business Website',
-        price: 150,
+        price: 250,
         deliveryDays: 5,
         revisions: 3,
         popular: true,
@@ -76,7 +88,7 @@ export const serviceTabs = [
         id: 'premium',
         name: 'Premium',
         title: 'Pro Website + AI',
-        price: 350,
+        price: 450,
         deliveryDays: 10,
         revisions: 5,
         demo: {
@@ -102,6 +114,7 @@ export const serviceTabs = [
     label: 'UGC Ads',
     messageNoun: 'UGC ad',
     comingSoon: 'UGC ad packages are on the way. Message me in the meantime for a quote.',
+    addOns: [],
     steps: [],
     packages: [],
   },
