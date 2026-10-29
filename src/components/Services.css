@@ -231,23 +231,101 @@
   opacity: 0.88;
 }
 
-/* ---- Below the cards --------------------------------------------------- */
+/* "See example site": an outlined button with a caption line. */
+.service-demo {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  margin-bottom: 0.35rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-media);
+  background: var(--surface-2);
+  color: var(--text);
+  text-align: center;
+  text-decoration: none;
+  transition: border-color var(--speed-fast) var(--ease);
+}
 
-.services-example {
-  margin: 1.25rem 0 0;
+.service-demo:hover {
+  border-color: var(--text);
+}
+
+.service-demo-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 0.9375rem;
+  font-weight: 600;
 }
 
-.services-example a {
+.service-demo-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--text-muted);
+}
+
+.service-demo-caption {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+}
+
+.service-demo.is-disabled {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.service-demo.is-disabled .service-demo-label {
   font-weight: 500;
-  text-decoration-color: var(--border-strong);
-  text-underline-offset: 4px;
-  transition: text-decoration-color var(--speed-fast) var(--ease);
 }
 
-.services-example a:hover {
-  text-decoration-color: var(--text);
+/* Thumbnail of the demo, shown above the button on desktop hover or focus. */
+.service-demo-preview {
+  display: none;
 }
+
+@media (hover: hover) and (min-width: 961px) {
+  .service-demo-preview {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    z-index: 2;
+    display: block;
+    width: 240px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 6px);
+    transition:
+      opacity var(--speed) var(--ease),
+      transform var(--speed) var(--ease);
+  }
+
+  .service-demo-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .service-demo:hover .service-demo-preview,
+  .service-demo:focus-visible .service-demo-preview {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ---- Below the cards --------------------------------------------------- */
 
 .services-custom {
   display: flex;
@@ -385,7 +463,8 @@
   .service-card-inner,
   .services-tab,
   .service-button,
-  .services-example a {
+  .service-demo,
+  .service-demo-preview {
     transition: none;
   }
 }

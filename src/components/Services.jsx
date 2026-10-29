@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { FiExternalLink } from 'react-icons/fi'
 import './Services.css'
 import { FIVERR_URL, serviceTabs } from '../lib/services.js'
 import { whatsappLink } from '../lib/contact.js'
@@ -32,6 +33,54 @@ function pop(card) {
       { transform: 'translateY(-6px) scale(1.03)' },
     ],
     { duration: 300, easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
+  )
+}
+
+// "See example site" for a package; a muted placeholder until a demo exists.
+function DemoButton({ demo, packageName }) {
+  const [previewFailed, setPreviewFailed] = useState(false)
+  const caption = demo.name ? `${demo.name} · ${demo.label}` : demo.label
+
+  if (!demo.url) {
+    return (
+      // No href: not focusable and not clickable, announced as a dimmed link.
+      <a className="service-demo is-disabled" role="link" aria-disabled="true">
+        <span className="service-demo-label">Example coming soon</span>
+        <span className="service-demo-caption">{caption}</span>
+      </a>
+    )
+  }
+
+  return (
+    <a
+      className="service-demo"
+      href={demo.url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span className="service-demo-label">
+        See example site
+        <FiExternalLink className="service-demo-icon" aria-hidden="true" />
+      </span>
+      <span className="service-demo-caption">{caption}</span>
+      <span className="visually-hidden">
+        {' '}
+        for the {packageName} package (opens in a new tab)
+      </span>
+      {demo.preview && !previewFailed && (
+        <span className="service-demo-preview" aria-hidden="true">
+          <img
+            src={`${import.meta.env.BASE_URL}${demo.preview}`}
+            alt=""
+            width="240"
+            height="126"
+            loading="lazy"
+            decoding="async"
+            onError={() => setPreviewFailed(true)}
+          />
+        </span>
+      )}
+    </a>
   )
 }
 
@@ -87,6 +136,7 @@ function PackageCard({ pkg, messageNoun, isSelected, onSelect, onKeyDown, cardRe
         </ul>
 
         <div className="service-card-actions">
+          {pkg.demo && <DemoButton demo={pkg.demo} packageName={pkg.name} />}
           <a
             className="service-button is-primary"
             href={FIVERR_URL}
@@ -199,15 +249,6 @@ function ServicePanel({ tab, selectedId, onSelect }) {
   return (
     <>
       <PackageGroup tab={tab} selectedId={selectedId} onSelect={onSelect} />
-
-      {tab.example && (
-        <p className="services-example">
-          <a href={tab.example.href} target="_blank" rel="noopener noreferrer">
-            {tab.example.label} <span aria-hidden="true">→</span>
-            <span className="visually-hidden"> (opens in a new tab)</span>
-          </a>
-        </p>
-      )}
 
       <div className="services-custom">
         <div>

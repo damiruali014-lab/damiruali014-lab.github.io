@@ -4,6 +4,12 @@
 
    To launch UGC packages, fill `packages` in the `ugc` tab using the same
    shape as the website packages. A tab with no packages shows "Coming soon".
+
+   Each package's `demo` drives its "See example site" button:
+     url      live demo link, or null to show "Example coming soon"
+     label    what kind of example it is
+     name     optional demo name shown before the label
+     preview  optional thumbnail in /public, shown on desktop hover
    ========================================================================= */
 
 // Where every "Order on Fiverr" button goes.
@@ -15,10 +21,6 @@ export const serviceTabs = [
     label: 'Websites',
     // Used in the prefilled message: "...in the Basic website package".
     messageNoun: 'website',
-    example: {
-      label: 'See an example site',
-      href: 'https://sitescout-damir.vercel.app/p/demo-alm-1-en',
-    },
     steps: [
       'Tell me about your business',
       'I send a design plan',
@@ -33,6 +35,7 @@ export const serviceTabs = [
         price: 80,
         deliveryDays: 3,
         revisions: 2,
+        demo: { url: null, label: 'Landing page example' },
         features: [
           '1-page responsive website',
           'Contact form, map, social media links',
@@ -49,6 +52,7 @@ export const serviceTabs = [
         deliveryDays: 5,
         revisions: 3,
         popular: true,
+        demo: { url: null, label: 'Business website example' },
         features: [
           'Up to 5 pages (Home, About, Services, Gallery, Contact)',
           'Booking form + FAQ section',
@@ -65,6 +69,12 @@ export const serviceTabs = [
         price: 350,
         deliveryDays: 10,
         revisions: 5,
+        demo: {
+          url: 'https://haluna-ten.vercel.app/',
+          label: 'Online store example',
+          name: 'Haluna',
+          preview: 'demos/haluna-preview.webp',
+        },
         features: [
           'Up to 10 pages',
           'Online store with payments (up to 20 products)',

@@ -107,6 +107,18 @@ function StageView({ work, embed, number }) {
               <span className="visually-hidden"> (opens in a new tab)</span>
             </a>
           )}
+          {/* Image-only projects still link out to the real site, in a new tab. */}
+          {!isEmbed && embed.destination && (
+            <a
+              className="stage-link"
+              href={embed.destination}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Visit site ↗
+              <span className="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )}
           {canFullscreen && (
             <button
               type="button"

@@ -124,7 +124,15 @@ export const MOCK_ROWS = [
     tools: ['Vite'],
     image_paths: [slide('Preview fallback', '#2a1f1b')],
   }),
-  row('mock-award', 5, {
+  row('mock-haluna', 5, {
+    title: 'Haluna — beauty e-commerce demo',
+    description:
+      'Image-only project with a link: the stage shows "Visit site", which opens in a new tab. [mock data]',
+    project_url: 'https://haluna-ten.vercel.app/',
+    tools: ['React', 'TypeScript', 'GSAP', 'API'],
+    image_paths: [slide('Haluna', '#2b1e16', '#fbf7f1')],
+  }),
+  row('mock-award', 6, {
     title: 'Hackathon finalist',
     category: 'Achievements',
     description: 'Finalist at a regional student hackathon. [mock data]',
