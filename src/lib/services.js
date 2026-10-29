@@ -57,7 +57,12 @@ export const serviceTabs = [
         deliveryDays: 5,
         revisions: 3,
         popular: true,
-        demo: { url: null, label: 'Business website example' },
+        demo: {
+          url: 'https://mira-dental-jade.vercel.app/',
+          label: 'Business website example',
+          name: 'Mira Dental Studio',
+          preview: 'demos/mira-preview.webp',
+        },
         features: [
           'Up to 5 pages (Home, About, Services, Gallery, Contact)',
           'Booking form + FAQ section',
