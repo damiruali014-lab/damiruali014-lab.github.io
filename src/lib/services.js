@@ -35,7 +35,12 @@ export const serviceTabs = [
         price: 80,
         deliveryDays: 3,
         revisions: 2,
-        demo: { url: null, label: 'Landing page example' },
+        demo: {
+          url: 'https://sora-coffee.vercel.app/',
+          label: 'Landing page example',
+          name: 'Sora Coffee',
+          preview: 'demos/sora-preview.webp',
+        },
         features: [
           '1-page responsive website',
           'Contact form, map, social media links',
