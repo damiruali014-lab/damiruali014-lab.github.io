@@ -9,21 +9,54 @@ function jumpTo(event, id) {
   if (!target) return
 
   event.preventDefault()
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
   target.setAttribute('tabindex', '-1')
   target.focus({ preventScroll: true })
 }
 
-function PackageCard({ pkg, messageNoun }) {
+// The card selected on load: the "Most popular" package, else the first one.
+function defaultPackageId(tab) {
+  return (tab.packages.find((pkg) => pkg.popular) ?? tab.packages[0])?.id
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+// A quick squeeze-then-settle on the card that was just picked.
+function pop(card) {
+  if (prefersReducedMotion() || !card.animate) return
+  card.animate(
+    [
+      { transform: 'translateY(-6px) scale(0.98)' },
+      { transform: 'translateY(-6px) scale(1.03)' },
+    ],
+    { duration: 300, easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
+  )
+}
+
+function PackageCard({ pkg, messageNoun, isSelected, onSelect, onKeyDown, cardRef }) {
   const message = `Hi Damir, I'm interested in the ${pkg.name} ${messageNoun} package`
+  const nameId = `package-${pkg.id}-name`
   const titleId = `package-${pkg.id}-title`
 
   return (
-    <li className={`service-card${pkg.popular ? ' is-popular' : ''}`}>
-      <article className="service-card-inner" aria-labelledby={titleId}>
+    <li
+      ref={cardRef}
+      className={`service-card${isSelected ? ' is-selected' : ''}`}
+      role="radio"
+      aria-checked={isSelected}
+      aria-labelledby={`${nameId} ${titleId}`}
+      tabIndex={isSelected ? 0 : -1}
+      // Clicks on the buttons bubble up here too, so ordering also selects.
+      onClick={(event) => onSelect(pkg.id, event.currentTarget)}
+      onKeyDown={(event) => onKeyDown(event, pkg.id)}
+    >
+      <div className="service-card-inner">
         <div className="service-card-top">
-          <p className="service-card-name">{pkg.name}</p>
+          <p className="service-card-name" id={nameId}>
+            {pkg.name}
+          </p>
           {pkg.popular && <span className="service-card-badge">Most popular</span>}
         </div>
         <h3 className="service-card-title" id={titleId}>
@@ -79,12 +112,74 @@ function PackageCard({ pkg, messageNoun }) {
             </span>
           </a>
         </div>
-      </article>
+      </div>
     </li>
   )
 }
 
-function ServicePanel({ tab }) {
+// One radio group of package cards; works for any tab's packages.
+function PackageGroup({ tab, selectedId, onSelect }) {
+  const cardRefs = useRef({})
+
+  function select(id, card) {
+    if (id === selectedId) return
+    onSelect(id)
+    pop(card)
+  }
+
+  function handleKeyDown(event, id) {
+    // Keys pressed on the buttons inside a card belong to those buttons.
+    if (event.target !== event.currentTarget) return
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      select(id, event.currentTarget)
+      return
+    }
+
+    const index = tab.packages.findIndex((pkg) => pkg.id === id)
+    const last = tab.packages.length - 1
+    const nextIndex = {
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowDown: index === last ? 0 : index + 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      ArrowUp: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }[event.key]
+    if (nextIndex === undefined) return
+
+    event.preventDefault()
+    const nextId = tab.packages[nextIndex].id
+    const nextCard = cardRefs.current[nextId]
+    select(nextId, nextCard)
+    nextCard?.focus()
+  }
+
+  return (
+    <ul
+      className="services-grid"
+      role="radiogroup"
+      aria-label={`${tab.label} packages`}
+    >
+      {tab.packages.map((pkg) => (
+        <PackageCard
+          key={pkg.id}
+          pkg={pkg}
+          messageNoun={tab.messageNoun}
+          isSelected={pkg.id === selectedId}
+          onSelect={select}
+          onKeyDown={handleKeyDown}
+          cardRef={(node) => {
+            cardRefs.current[pkg.id] = node
+          }}
+        />
+      ))}
+    </ul>
+  )
+}
+
+function ServicePanel({ tab, selectedId, onSelect }) {
   if (tab.packages.length === 0) {
     return (
       <div className="services-soon">
@@ -103,11 +198,7 @@ function ServicePanel({ tab }) {
 
   return (
     <>
-      <ul className="services-grid">
-        {tab.packages.map((pkg) => (
-          <PackageCard key={pkg.id} pkg={pkg} messageNoun={tab.messageNoun} />
-        ))}
-      </ul>
+      <PackageGroup tab={tab} selectedId={selectedId} onSelect={onSelect} />
 
       {tab.example && (
         <p className="services-example">
@@ -156,6 +247,10 @@ function ServicePanel({ tab }) {
 
 function Services() {
   const [activeId, setActiveId] = useState(serviceTabs[0].id)
+  // Each tab remembers its own selected package.
+  const [selected, setSelected] = useState(() =>
+    Object.fromEntries(serviceTabs.map((tab) => [tab.id, defaultPackageId(tab)])),
+  )
   const tabRefs = useRef({})
 
   // Arrow keys, Home and End move between tabs (WAI-ARIA tabs pattern).
@@ -226,7 +321,13 @@ function Services() {
             aria-labelledby={`services-tab-${tab.id}`}
             hidden={tab.id !== activeId}
           >
-            {tab.id === activeId && <ServicePanel tab={tab} />}
+            {tab.id === activeId && (
+              <ServicePanel
+                tab={tab}
+                selectedId={selected[tab.id]}
+                onSelect={(id) => setSelected((current) => ({ ...current, [tab.id]: id }))}
+              />
+            )}
           </div>
         ))}
       </div>
