@@ -1,12 +1,13 @@
 import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import './Contact.css'
-
-const PHONE_NUMBER = '77784760435'
-const PHONE_DISPLAY = '+7 (778) 476 04 35'
-const EMAIL = 'dumich2003@gmail.com'
-const LINKEDIN_URL = 'https://www.linkedin.com/in/damiruali-dev/'
-const GITHUB_URL = 'https://github.com/damiruali014-lab'
+import {
+  EMAIL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  PHONE_DISPLAY,
+  whatsappLink,
+} from '../lib/contact.js'
 
 const links = [
   {
@@ -38,7 +39,7 @@ const links = [
     icon: FaWhatsapp,
     name: 'WhatsApp',
     label: PHONE_DISPLAY,
-    href: `https://wa.me/${PHONE_NUMBER}`,
+    href: whatsappLink(),
     external: true,
   },
 ]

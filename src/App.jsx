@@ -8,6 +8,7 @@ import ThemeToggle from './components/ThemeToggle.jsx'
 import Hero from './components/Hero.jsx'
 import Works from './components/Works.jsx'
 import About from './components/About.jsx'
+import Services from './components/Services.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import { useAdminSession, useHashRoute } from './hooks.js'
@@ -116,6 +117,9 @@ function App() {
         </Reveal>
         <Reveal>
           <About />
+        </Reveal>
+        <Reveal>
+          <Services />
         </Reveal>
         <Reveal>
           <Contact />

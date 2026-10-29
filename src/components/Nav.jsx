@@ -5,6 +5,7 @@ import ThemeToggle from './ThemeToggle.jsx'
 const sections = [
   { id: 'stage', label: 'Stage' },
   { id: 'about', label: 'About' },
+  { id: 'services', label: 'Services' },
   { id: 'contact', label: 'Contact' },
 ]
 
