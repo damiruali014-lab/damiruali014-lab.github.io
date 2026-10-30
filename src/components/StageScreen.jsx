@@ -7,9 +7,13 @@ function StageScreen({ work, embed, status, onFrameLoad }) {
       <iframe
         className="stage-iframe"
         src={embed.src}
-        title={`${work.title} live demo`}
+        title={
+          work.typeLabel
+            ? `Live demo of ${work.title}, ${work.typeLabel}`
+            : `${work.title} live demo`
+        }
         loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"
         referrerPolicy="no-referrer"
         onLoad={onFrameLoad}
       />

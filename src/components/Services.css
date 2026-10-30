@@ -287,6 +287,31 @@
   letter-spacing: 0.02em;
 }
 
+.service-demo-group {
+  display: grid;
+  gap: 0.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.service-demo-group .service-demo {
+  margin-bottom: 0;
+}
+
+.service-demo-newtab {
+  justify-self: center;
+  padding: 0.25rem 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+.service-demo-newtab:hover {
+  color: var(--text);
+  text-decoration-color: var(--text);
+}
+
 .service-demo.is-disabled {
   border-style: dashed;
   border-color: var(--border-strong);
@@ -538,5 +563,13 @@
   .service-demo-preview,
   .services-addon {
     transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .service-demo-newtab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 }

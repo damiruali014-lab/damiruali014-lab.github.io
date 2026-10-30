@@ -10,6 +10,8 @@
      label    what kind of example it is
      name     optional demo name shown before the label
      preview  optional thumbnail in /public, shown on desktop hover
+     channel  optional Live Stage channel id (see demoSites.js); the button
+              then tunes the stage to it, with a small "Open in new tab" link
 
    `featureNote` is added, muted, as the last line of every package in a tab.
    `addOns` are the "Popular add-ons" pills under the cards; `from: true`
@@ -51,6 +53,7 @@ export const serviceTabs = [
           label: 'Landing page example',
           name: 'Sora Coffee',
           preview: 'demos/sora-preview.webp',
+          channel: 'demo-sora',
         },
         features: [
           '1-page responsive website',
@@ -74,6 +77,7 @@ export const serviceTabs = [
           label: 'Business website example',
           name: 'Mira Dental Studio',
           preview: 'demos/mira-preview.webp',
+          channel: 'demo-mira',
         },
         features: [
           'Up to 5 pages (Home, About, Services, Gallery, Contact)',
@@ -96,6 +100,7 @@ export const serviceTabs = [
           label: 'Online store example',
           name: 'Haluna',
           preview: 'demos/haluna-preview.webp',
+          channel: 'demo-haluna',
         },
         features: [
           'Up to 10 pages',

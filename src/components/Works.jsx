@@ -16,11 +16,17 @@ import {
   setWorkHash,
   workIdFromHash,
 } from '../lib/stage.js'
+import {
+  DEMO_SITES,
+  matchesFilter,
+  subscribeToChannelRequests,
+  withDemoSites,
+} from '../lib/demoSites.js'
 
 // Mock data stands in for Supabase in `npm run dev` when it is not configured.
 const hasSource = isSupabaseConfigured || USE_MOCK_WORKS
 
-const filters = ['All', 'Code', 'Other', 'Achievements']
+const filters = ['All', 'Websites', 'Code', 'Other', 'Achievements']
 const categoryPriority = { Code: 0, Other: 1, Achievements: 2 }
 
 function Works({ isAdmin = false }) {
@@ -49,7 +55,7 @@ function Works({ isAdmin = false }) {
           // bring the stage into view, once.
           if (!handledDeepLink.current) {
             handledDeepLink.current = true
-            const linked = rows.find((row) => row.id === workIdFromHash())
+            const linked = withDemoSites(rows).find((row) => row.id === workIdFromHash())
             if (linked) {
               setFilter('All')
               requestAnimationFrame(() =>
@@ -81,6 +87,22 @@ function Works({ isAdmin = false }) {
     [],
   )
 
+  // "See example site" in Services: tune to that channel and scroll to it.
+  useEffect(
+    () =>
+      subscribeToChannelRequests((id) => {
+        const demo = DEMO_SITES.find((site) => site.id === id)
+        setFilter((current) => (demo && matchesFilter(demo, current) ? current : 'All'))
+        setWorkHash(id)
+        document.getElementById('stage')?.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'auto'
+            : 'smooth',
+        })
+      }),
+    [],
+  )
+
   async function handleDelete(work) {
     const confirmed = window.confirm(
       `Delete “${work.title}”? This removes the project and its uploaded images.`,
@@ -109,15 +131,14 @@ function Works({ isAdmin = false }) {
   function handleFilter(name) {
     setFilter(name)
     if (isAdmin || !hashId) return
-    const next = (works ?? []).filter((w) => name === 'All' || w.category === name)
+    const next = withDemoSites(works ?? []).filter((w) => matchesFilter(w, name))
     if (next.length > 0 && !next.some((w) => w.id === hashId)) setWorkHash(next[0].id)
   }
 
   const isLoading = works === null
-  const visibleWorks = (filter === 'All'
-    ? [...(works ?? [])]
-    : (works ?? []).filter((work) => work.category === filter)
-  ).sort((a, b) => {
+  // The demo websites are code, not rows, so the admin grid leaves them out.
+  const stageWorks = isAdmin || isLoading ? works ?? [] : withDemoSites(works)
+  const visibleWorks = stageWorks.filter((work) => matchesFilter(work, filter)).sort((a, b) => {
     // Only the admin grid is grouped by category; the stage follows display_order.
     if (filter !== 'All' || !isAdmin) return 0
     return (
@@ -223,7 +244,7 @@ function Works({ isAdmin = false }) {
             role="group"
             aria-label="Filter projects by category"
           >
-            {filters.map((name) => (
+            {filters.filter((name) => !isAdmin || name !== 'Websites').map((name) => (
               <button
                 key={name}
                 type="button"

@@ -41,6 +41,13 @@ function row(id, order, fields) {
 }
 
 export const MOCK_ROWS = [
+  row('mock-sitescout', 0, {
+    title: 'SiteScout',
+    description: 'Stand-in for the real SiteScout row; the demo websites follow it. [mock data]',
+    project_url: 'https://example.com/',
+    embed_kind: 'iframe',
+    tools: ['React'],
+  }),
   row('mock-trackline', 1, {
     title: 'Trackline',
     description:
@@ -124,8 +131,8 @@ export const MOCK_ROWS = [
     tools: ['Vite'],
     image_paths: [slide('Preview fallback', '#2a1f1b')],
   }),
-  row('mock-haluna', 5, {
-    title: 'Haluna — beauty e-commerce demo',
+  row('mock-linked', 5, {
+    title: 'Image-only with link',
     description:
       'Image-only project with a link: the stage shows "Visit site", which opens in a new tab. [mock data]',
     project_url: 'https://haluna-ten.vercel.app/',

@@ -5,9 +5,14 @@ import { useInViewport } from '../hooks.js'
 // A frame that has not reported "load" in this long is treated as unusable.
 const LOAD_TIMEOUT_MS = 8000
 
+const VIEWS = [
+  { id: 'desktop', label: 'Desktop' },
+  { id: 'mobile', label: 'Mobile' },
+]
+
 // The frame plus the line under it. Rendered with key={work.id}, so its state
 // (loading, fallback) starts fresh on every channel change.
-function StageView({ work, embed, number }) {
+function StageView({ work, embed, number, view, onViewChange, switched }) {
   const isEmbed = embed.kind === 'iframe'
   const [status, setStatus] = useState(isEmbed ? 'loading' : 'ready')
   const frameRef = useRef(null)
@@ -48,8 +53,27 @@ function StageView({ work, embed, number }) {
           <span className="stage-bar-text">
             LIVE · CH {number} · {work.title}
           </span>
+          {/* Hidden on phones by CSS: there the site is already its mobile self. */}
+          {isEmbed && !showingFallback && (
+            <div className="stage-views" role="group" aria-label="Preview size">
+              {VIEWS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`stage-view${view === id ? ' is-active' : ''}`}
+                  aria-pressed={view === id}
+                  onClick={() => onViewChange(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="stage-screen" ref={screenRef}>
+        <div
+          className={`stage-screen${isEmbed && !showingFallback && view === 'mobile' ? ' is-mobile' : ''}`}
+          ref={screenRef}
+        >
           <div className="stage-screen-inner">
             <StageScreen
               work={work}
@@ -60,9 +84,22 @@ function StageView({ work, embed, number }) {
           </div>
           {isEmbed && status === 'loading' && (
             <p className="stage-loading" aria-live="polite">
+              <span className="stage-loading-dot" aria-hidden="true" />
               Loading live demo…
             </p>
           )}
+          {showingFallback && embed.destination && (
+            <a
+              className="stage-fallback-open"
+              href={embed.destination}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open live site ↗
+              <span className="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )}
+          {switched && <span className="stage-static" aria-hidden="true" />}
         </div>
       </div>
 

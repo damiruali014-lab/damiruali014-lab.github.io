@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
-import { FiExternalLink, FiInfo } from 'react-icons/fi'
+import { useEffect, useRef, useState } from 'react'
+import { FiExternalLink, FiInfo, FiTv } from 'react-icons/fi'
 import './Services.css'
 import { FIVERR_URL, serviceTabs } from '../lib/services.js'
 import { whatsappLink } from '../lib/contact.js'
+import { showChannel, subscribeToPackageRequests } from '../lib/demoSites.js'
 
 // Smooth-scroll to another section without touching location.hash.
 function jumpTo(event, id) {
@@ -37,6 +38,7 @@ function pop(card) {
 }
 
 // "See example site" for a package; a muted placeholder until a demo exists.
+// With a Live Stage channel it plays there, and the new tab is a small link.
 function DemoButton({ demo, packageName }) {
   const [previewFailed, setPreviewFailed] = useState(false)
   const caption = demo.name ? `${demo.name} · ${demo.label}` : demo.label
@@ -51,21 +53,33 @@ function DemoButton({ demo, packageName }) {
     )
   }
 
-  return (
+  const onStage = Boolean(demo.channel)
+  const button = (
     <a
       className="service-demo"
-      href={demo.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      {...(onStage
+        ? {
+            href: `#/work/${demo.channel}`,
+            onClick: (event) => {
+              event.preventDefault()
+              showChannel(demo.channel)
+            },
+          }
+        : { href: demo.url, target: '_blank', rel: 'noopener noreferrer' })}
     >
       <span className="service-demo-label">
         See example site
-        <FiExternalLink className="service-demo-icon" aria-hidden="true" />
+        {onStage ? (
+          <FiTv className="service-demo-icon" aria-hidden="true" />
+        ) : (
+          <FiExternalLink className="service-demo-icon" aria-hidden="true" />
+        )}
       </span>
       <span className="service-demo-caption">{caption}</span>
       <span className="visually-hidden">
         {' '}
-        for the {packageName} package (opens in a new tab)
+        for the {packageName} package
+        {onStage ? ' on the Live Stage' : ' (opens in a new tab)'}
       </span>
       {demo.preview && !previewFailed && (
         <span className="service-demo-preview" aria-hidden="true">
@@ -81,6 +95,23 @@ function DemoButton({ demo, packageName }) {
         </span>
       )}
     </a>
+  )
+
+  if (!onStage) return button
+
+  return (
+    <div className="service-demo-group">
+      {button}
+      <a
+        className="service-demo-newtab"
+        href={demo.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in new tab ↗
+        <span className="visually-hidden"> ({demo.name ?? packageName} example site)</span>
+      </a>
+    </div>
   )
 }
 
@@ -344,6 +375,30 @@ function Services() {
     Object.fromEntries(serviceTabs.map((tab) => [tab.id, defaultPackageId(tab)])),
   )
   const tabRefs = useRef({})
+
+  // "This is my … package" on the Live Stage: open that card's tab, select it
+  // and bring the section into view.
+  useEffect(
+    () =>
+      subscribeToPackageRequests((packageId) => {
+        const tab = serviceTabs.find((item) => item.packages.some((pkg) => pkg.id === packageId))
+        if (!tab) return
+
+        setActiveId(tab.id)
+        setSelected((current) => ({ ...current, [tab.id]: packageId }))
+        document.getElementById('services')?.scrollIntoView({
+          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+          block: 'start',
+        })
+        // After the re-render makes the card focusable.
+        requestAnimationFrame(() =>
+          document
+            .querySelector(`[aria-labelledby^="package-${packageId}-name"]`)
+            ?.focus({ preventScroll: true }),
+        )
+      }),
+    [],
+  )
 
   // Arrow keys, Home and End move between tabs (WAI-ARIA tabs pattern).
   function handleKeyDown(event) {
